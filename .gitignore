@@ -1,0 +1,24 @@
+# dependencias
+node_modules/
+
+# salida de construcción de Next.js
+.next/
+out/
+
+# solicitado: ignorar el archivo de bloqueo
+# Nota: Normalmente se recomienda commitear este archivo para asegurar consistencia entre entornos,
+# pero lo incluyo aquí según tu petición.
+package-lock.json
+
+# archivos de entorno locales
+.env*.local
+
+# registros de errores y logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# misceláneo
+.DS_Store
+coverage/
+build/
