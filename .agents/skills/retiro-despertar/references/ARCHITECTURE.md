@@ -27,3 +27,4 @@ El proyecto utiliza **Next.js App Router** y sigue un patrón de arquitectura mo
 ├── package.json
 ├── tailwind.config.ts        # Configuración personalizada de Tailwind
 └── tsconfig.json
+```

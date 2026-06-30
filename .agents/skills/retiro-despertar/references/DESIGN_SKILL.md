@@ -30,5 +30,6 @@ Las imágenes son el núcleo emocional del sitio y deben verse perfectas en cual
   Para que una foto llene su espacio en móvil y escritorio sin deformarse ni estirarse, el componente `<Image />` siempre debe seguir este patrón estructural:
   ```tsx
   <div className="relative w-full aspect-square md:aspect-video rounded-2xl overflow-hidden">
-    <Image alt="Descripción" className="object-cover" fill priority="{isHero}" src="/images/tu-foto.jpg"/>
+    <Image alt="Descripción" className="object-cover" fill priority={isHero} src="/images/tu-foto.jpg"/>
   </div>
+  ```
