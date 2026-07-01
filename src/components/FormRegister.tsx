@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { FormRegisterInput } from '@/types';
 import { CheckCircle2, Loader2, Sparkles } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 export default function FormRegister() {
   const [formData, setFormData] = useState<FormRegisterInput>({
@@ -27,8 +28,22 @@ export default function FormRegister() {
     setStatus('submitting');
 
     try {
-      // Simular llamada a la API
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const { error } = await supabase
+        .from('registrations')
+        .insert([
+          {
+            full_name: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+            interest_discipline: formData.interestDiscipline,
+            message: formData.message || null,
+          },
+        ]);
+
+      if (error) {
+        throw error;
+      }
+
       setStatus('success');
       setFormData({
         fullName: '',
@@ -37,7 +52,8 @@ export default function FormRegister() {
         interestDiscipline: 'Todas',
         message: '',
       });
-    } catch {
+    } catch (err) {
+      console.error('Error recording registration:', err);
       setStatus('error');
     }
   };
