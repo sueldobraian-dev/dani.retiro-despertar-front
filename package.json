@@ -7,7 +7,9 @@
     "build": "next build",
     "build:watch": "nodemon --watch src -e ts,tsx,css --exec \"npm run build\"",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "docker:up": "docker compose --env-file .env.local up --build -d",
+    "docker:down": "docker compose down"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",
