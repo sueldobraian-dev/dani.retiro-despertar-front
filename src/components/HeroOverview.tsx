@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export default function HeroOverview() {
   return (
-    <section className="py-12 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <section id="inicio" className="py-12 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="flex flex-col lg:flex-row items-center gap-12">
         {/* Contenido de texto */}
         <div className="w-full lg:w-1/2 flex flex-col space-y-6 text-left">

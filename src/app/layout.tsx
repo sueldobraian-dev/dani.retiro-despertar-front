@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
+import Header from '@/components/Header';
 import '../styles/globals.css';
 
 // Configuración de la fuente Sans-Serif limpia para textos de lectura
@@ -64,6 +65,7 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${inter.variable} ${playfair.variable}`}>
       <body className="bg-stone-50 text-stone-800 font-sans antialiased min-h-screen selection:bg-emerald-800 selection:text-stone-50">
+        <Header />
         {children}
       </body>
     </html>
