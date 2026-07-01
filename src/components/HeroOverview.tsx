@@ -49,8 +49,8 @@ export default function HeroOverview() {
           <div className="w-full lg:hidden">
             <div className="relative w-full aspect-square sm:aspect-[4/3] md:aspect-video rounded-3xl overflow-hidden shadow-xl shadow-stone-200 border border-stone-100">
               <Image
-                src="/images/experience/vista_aerea.jpg"
-                alt="Vista aérea del entorno del Retiro Despertar"
+                src="/images/experience/circulo_infinito.jpg"
+                alt="Entorno natural del Retiro Despertar"
                 className="object-cover"
                 fill
                 priority
