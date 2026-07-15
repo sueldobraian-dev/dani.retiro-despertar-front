@@ -19,6 +19,9 @@ export default function MediaGallery() {
   const [activeSubfolder, setActiveSubfolder] = useState<Folder | null>(null);
   const [loadingSubfolders, setLoadingSubfolders] = useState<boolean>(false);
 
+  // Cantidad de imágenes visibles (paginación de a 10)
+  const [visibleCount, setVisibleCount] = useState<number>(10);
+
   // 1. Obtener la estructura de carpetas de forma dinámica al montar
   useEffect(() => {
     const fetchFolders = async () => {
@@ -97,6 +100,7 @@ export default function MediaGallery() {
 
     const fetchMedia = async () => {
       setMediaItems([]);
+      setVisibleCount(10);
       if (isLocation) {
         if (!activeSubfolder) {
           return;
@@ -262,33 +266,46 @@ export default function MediaGallery() {
             <p className="text-stone-500">No se encontraron archivos en esta carpeta.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {mediaItems.map((item) => (
-              <div
-                key={item.id}
-                className="relative w-full aspect-video rounded-2xl overflow-hidden bg-stone-100 border border-stone-200 shadow-sm hover:shadow-md transition-all duration-300 group"
-              >
-                {item.type === 'image' ? (
-                  <Image
-                    src={item.src}
-                    alt={item.alt}
-                    fill
-                    loading="lazy"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                  />
-                ) : (
-                  <iframe
-                    src={`https://www.youtube.com/embed/${item.src}?rel=0`}
-                    title={item.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full border-0"
-                  />
-                )}
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {mediaItems.slice(0, visibleCount).map((item) => (
+                <div
+                  key={item.id}
+                  className="relative w-full aspect-video rounded-2xl overflow-hidden bg-stone-100 border border-stone-200 shadow-sm hover:shadow-md transition-all duration-300 group"
+                >
+                  {item.type === 'image' ? (
+                    <Image
+                      src={item.src}
+                      alt={item.alt}
+                      fill
+                      loading="lazy"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                    />
+                  ) : (
+                    <iframe
+                      src={`https://www.youtube.com/embed/${item.src}?rel=0`}
+                      title={item.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full border-0"
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {mediaItems.length > visibleCount && (
+              <div className="text-center mt-10">
+                <button
+                  onClick={() => setVisibleCount((prev) => prev + 10)}
+                  className="px-6 py-3 bg-emerald-700 hover:bg-emerald-800 text-stone-50 rounded-full font-medium transition-colors duration-300 shadow-md shadow-emerald-950/10"
+                >
+                  Cargar más
+                </button>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
 
       </div>
