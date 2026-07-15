@@ -1,5 +1,6 @@
 import { FeedbackParticipant } from '@/types';
 import { Star } from 'lucide-react';
+import Link from 'next/link';
 
 const mockFeedbacks: FeedbackParticipant[] = [
   {
@@ -101,7 +102,21 @@ export default function FeedbackCarousel() {
             </div>
           ))}
         </div>
+
+        {/* Enlace para ver fotos/videos de testimonios en la galería */}
+        <div className="mt-12 text-center">
+          <Link
+            href="/galeria#galeria-testimonios"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-700 hover:bg-emerald-800 text-stone-50 rounded-full font-medium transition duration-300 ease-in-out shadow-md shadow-emerald-900/10"
+          >
+            Ver testimonios en la galería
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+              <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.63l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clipRule="evenodd" />
+            </svg>
+          </Link>
+        </div>
       </div>
     </section>
+
   );
 }

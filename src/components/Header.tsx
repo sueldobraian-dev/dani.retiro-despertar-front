@@ -1,16 +1,20 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { Menu, X, Sparkles } from 'lucide-react';
 
 const NAV_ITEMS = [
-  { id: 'inicio', label: 'Inicio' },
-  { id: 'experiencia', label: 'La Experiencia' },
-  { id: 'testimonios', label: 'Testimonios' },
-  { id: 'inscripcion', label: 'Reservar' },
+  { id: 'inicio', label: 'Inicio', path: '/' },
+  { id: 'experiencia', label: 'La Experiencia', path: '/#experiencia' },
+  { id: 'galeria', label: 'Galería', path: '/galeria' },
+  { id: 'testimonios', label: 'Testimonios', path: '/#testimonios' },
+  { id: 'inscripcion', label: 'Reservar', path: '/#inscripcion' },
 ];
 
 export default function Header() {
+  const pathname = usePathname();
   const [activeSection, setActiveSection] = useState('inicio');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -23,10 +27,16 @@ export default function Header() {
 
     window.addEventListener('scroll', handleScroll);
 
-    // Configurar Intersection Observer para detectar en qué sección estamos
+    // Si estamos en la página de galería, la sección activa es 'galeria'
+    if (pathname === '/galeria') {
+      setActiveSection('galeria');
+      return () => window.removeEventListener('scroll', handleScroll);
+    }
+
+    // Configurar Intersection Observer para detectar en qué sección estamos en la home
     const observerOptions = {
       root: null,
-      rootMargin: '-50% 0px -50% 0px', // Gatilla cuando la sección ocupa la mitad de la pantalla
+      rootMargin: '-50% 0px -50% 0px',
       threshold: 0,
     };
 
@@ -35,7 +45,6 @@ export default function Header() {
         if (entry.isIntersecting) {
           const id = entry.target.id;
           setActiveSection(id);
-          // Cambiar el hash en la URL sin alterar el historial de navegación
           window.history.replaceState(null, '', `#${id}`);
         }
       });
@@ -44,24 +53,35 @@ export default function Header() {
     const observer = new IntersectionObserver(observerCallback, observerOptions);
 
     NAV_ITEMS.forEach((item) => {
-      const element = document.getElementById(item.id);
-      if (element) observer.observe(element);
+      if (item.id !== 'galeria') {
+        const element = document.getElementById(item.id);
+        if (element) observer.observe(element);
+      }
     });
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       observer.disconnect();
     };
-  }, []);
+  }, [pathname]);
 
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
-    const element = document.getElementById(id);
-    if (element) {
-      setIsMobileMenuOpen(false);
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      setActiveSection(id);
-      window.history.replaceState(null, '', `#${id}`);
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, item: typeof NAV_ITEMS[0]) => {
+    setIsMobileMenuOpen(false);
+
+    if (item.id === 'galeria') {
+      // Dejar navegar normalmente a la página de galería
+      return;
+    }
+
+    if (pathname === '/') {
+      // Si estamos en la Home, hacemos scroll suave
+      e.preventDefault();
+      const element = document.getElementById(item.id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setActiveSection(item.id);
+        window.history.replaceState(null, '', `#${item.id}`);
+      }
     }
   };
 
@@ -75,9 +95,16 @@ export default function Header() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo */}
-        <a
-          href="#inicio"
-          onClick={(e) => handleNavClick(e, 'inicio')}
+        <Link
+          href="/"
+          onClick={(e) => {
+            setIsMobileMenuOpen(false);
+            if (pathname === '/') {
+              e.preventDefault();
+              const element = document.getElementById('inicio');
+              if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }}
           className="flex items-center gap-2 group cursor-pointer"
         >
           <div className="w-8 h-8 rounded-full bg-emerald-700/10 flex items-center justify-center text-emerald-800 group-hover:bg-emerald-700 group-hover:text-stone-50 transition-colors duration-300">
@@ -86,18 +113,18 @@ export default function Header() {
           <span className="font-serif font-bold text-stone-800 text-lg sm:text-xl tracking-tight">
             Retiro Despertar
           </span>
-        </a>
+        </Link>
 
         {/* Navegación Desktop */}
         <nav className="hidden md:flex items-center gap-8">
           {NAV_ITEMS.map((item) => (
-            <a
+            <Link
               key={item.id}
-              href={`#${item.id}`}
-              onClick={(e) => handleNavClick(e, item.id)}
+              href={item.path}
+              onClick={(e) => handleNavClick(e, item)}
               className={`text-sm font-medium tracking-wide transition-colors duration-300 relative py-1 ${
                 activeSection === item.id
-                  ? 'text-emerald-850 font-semibold'
+                  ? 'text-emerald-800 font-semibold'
                   : 'text-stone-600 hover:text-stone-900'
               }`}
             >
@@ -105,15 +132,15 @@ export default function Header() {
               {activeSection === item.id && (
                 <span className="absolute bottom-0 left-0 w-full h-0.5 bg-emerald-700 rounded-full" />
               )}
-            </a>
+            </Link>
           ))}
-          <a
-            href="#inscripcion"
-            onClick={(e) => handleNavClick(e, 'inscripcion')}
+          <Link
+            href="/#inscripcion"
+            onClick={(e) => handleNavClick(e, NAV_ITEMS[4])}
             className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-stone-50 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 shadow-sm shadow-emerald-950/10 hover:shadow-emerald-950/20"
           >
             Reservar Cupo
-          </a>
+          </Link>
         </nav>
 
         {/* Botón menú móvil */}
@@ -134,10 +161,10 @@ export default function Header() {
       >
         <nav className="flex flex-col px-6 space-y-4">
           {NAV_ITEMS.map((item) => (
-            <a
+            <Link
               key={item.id}
-              href={`#${item.id}`}
-              onClick={(e) => handleNavClick(e, item.id)}
+              href={item.path}
+              onClick={(e) => handleNavClick(e, item)}
               className={`text-base font-medium py-2 px-3 rounded-xl transition duration-300 ${
                 activeSection === item.id
                   ? 'bg-emerald-50 text-emerald-800 font-semibold'
@@ -145,15 +172,15 @@ export default function Header() {
               }`}
             >
               {item.label}
-            </a>
+            </Link>
           ))}
-          <a
-            href="#inscripcion"
-            onClick={(e) => handleNavClick(e, 'inscripcion')}
+          <Link
+            href="/#inscripcion"
+            onClick={(e) => handleNavClick(e, NAV_ITEMS[4])}
             className="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-stone-50 rounded-xl text-center font-semibold tracking-wide transition duration-300 shadow-sm"
           >
             Reservar Cupo
-          </a>
+          </Link>
         </nav>
       </div>
     </header>

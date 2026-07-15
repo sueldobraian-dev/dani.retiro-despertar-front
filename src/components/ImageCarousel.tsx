@@ -1,5 +1,6 @@
 import { ExperienceImage } from '@/types';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const mockImages: ExperienceImage[] = [
   {
@@ -69,7 +70,21 @@ export default function ImageCarousel() {
             </div>
           ))}
         </div>
+
+        {/* Enlace para redirigir a la galería */}
+        <div className="mt-12 text-center">
+          <Link
+            href="/galeria"
+            className="inline-flex items-center gap-2 px-6 py-3 border border-emerald-700 hover:bg-emerald-50 text-emerald-800 rounded-full font-medium transition duration-300 ease-in-out shadow-sm"
+          >
+            Ver más sobre la experiencia
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
+              <path fillRule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.63l-3.22-3.22a.75.75 0 111.06-1.06l4.5 4.5a.75.75 0 010 1.06l-4.5 4.5a.75.75 0 11-1.06-1.06l3.22-3.22H3.75A.75.75 0 013 10z" clipRule="evenodd" />
+            </svg>
+          </Link>
+        </div>
       </div>
     </section>
+
   );
 }

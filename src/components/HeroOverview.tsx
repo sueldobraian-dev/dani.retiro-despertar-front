@@ -37,7 +37,7 @@ export default function HeroOverview() {
                 Reservar mi Lugar
               </a>
               <a
-                href="#experiencia"
+                href="#galeria"
                 className="px-8 py-4 border border-stone-200 hover:border-stone-400 text-stone-700 hover:text-stone-900 rounded-full font-medium transition duration-300 ease-in-out text-center bg-white/50"
               >
                 Ver la Experiencia
