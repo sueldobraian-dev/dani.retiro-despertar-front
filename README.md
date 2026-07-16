@@ -65,7 +65,7 @@ Inicia Next.js en tu máquina local:
 ```bash
 npm run dev
 ```
-La aplicación estará disponible y corriendo en [http://localhost:3000](http://localhost:3000).
+La aplicación estará disponible y corriendo en [http://localhost:3000](http://localhost:3000)
 
 ### Paso 6. Compilar y Desplegar con Docker (Producción)
 Para construir la imagen standalone y levantar el contenedor de producción localmente:
