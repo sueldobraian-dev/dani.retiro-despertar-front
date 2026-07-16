@@ -8,6 +8,7 @@ import { Menu, X, Sparkles } from 'lucide-react';
 const NAV_ITEMS = [
   { id: 'inicio', label: 'Inicio', path: '/' },
   { id: 'experiencia', label: 'La Experiencia', path: '/#experiencia' },
+  { id: 'proximos-retiros', label: 'Próximos Retiros', path: '/#proximos-retiros' },
   { id: 'galeria', label: 'Galería', path: '/galeria' },
   { id: 'testimonios', label: 'Testimonios', path: '/#testimonios' },
   { id: 'inscripcion', label: 'Reservar', path: '/#inscripcion' },

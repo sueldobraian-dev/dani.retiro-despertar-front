@@ -1,5 +1,6 @@
 import HeroOverview from '@/components/HeroOverview';
 import ImageCarousel from '@/components/ImageCarousel';
+import UpcomingRetreats from '@/components/UpcomingRetreats';
 import FeedbackCarousel from '@/components/FeedbackCarousel';
 import FormRegister from '@/components/FormRegister';
 
@@ -12,7 +13,10 @@ export default function Home() {
       {/* 2. Carrusel de Imágenes de la Experiencia */}
       <ImageCarousel />
 
-      {/* 3. Carrusel de Testimonios / Feedbacks */}
+      {/* 3. Próximos Retiros */}
+      <UpcomingRetreats />
+
+      {/* 4. Carrusel de Testimonios / Feedbacks */}
       <FeedbackCarousel />
 
       {/* 4. Formulario de Inscripción */}
