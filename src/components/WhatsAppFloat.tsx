@@ -1,13 +1,28 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, MessageSquare, ArrowRight } from 'lucide-react';
 
 export default function WhatsAppFloat() {
   const [isMinimized, setIsMinimized] = useState<boolean>(false);
+  const [isShaking, setIsShaking] = useState<boolean>(false);
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5492212007660';
   const message = 'Hola me interesa formar parte de la experiencia. Me contás como puedo avanzar?';
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+
+  useEffect(() => {
+    const handleOpen = () => {
+      setIsMinimized(false);
+      setIsShaking(true);
+      // Detener el rebote después de 1.5s
+      setTimeout(() => {
+        setIsShaking(false);
+      }, 1500);
+    };
+
+    window.addEventListener('open-whatsapp', handleOpen);
+    return () => window.removeEventListener('open-whatsapp', handleOpen);
+  }, []);
 
   if (isMinimized) {
     return (
@@ -29,7 +44,7 @@ export default function WhatsAppFloat() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 w-80 bg-white border border-stone-200 rounded-3xl shadow-xl shadow-stone-900/10 overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-300">
+    <div className={`fixed bottom-6 right-6 z-50 w-80 bg-white border border-stone-200 rounded-3xl shadow-xl shadow-stone-900/10 overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-300 ${isShaking ? 'animate-bounce' : ''}`}>
       {/* Header */}
       <div className="bg-emerald-800 text-stone-50 p-4 relative">
         <button

@@ -2,7 +2,6 @@ import HeroOverview from '@/components/HeroOverview';
 import ImageCarousel from '@/components/ImageCarousel';
 import UpcomingRetreats from '@/components/UpcomingRetreats';
 import FeedbackCarousel from '@/components/FeedbackCarousel';
-import FormRegister from '@/components/FormRegister';
 
 export default function Home() {
   return (

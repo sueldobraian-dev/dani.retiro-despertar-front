@@ -11,7 +11,6 @@ const NAV_ITEMS = [
   { id: 'proximos-retiros', label: 'Próximos Retiros', path: '/#proximos-retiros' },
   { id: 'galeria', label: 'Galería', path: '/galeria' },
   { id: 'testimonios', label: 'Testimonios', path: '/#testimonios' },
-  { id: 'inscripcion', label: 'Reservar', path: '/#inscripcion' },
 ];
 
 export default function Header() {
@@ -68,6 +67,12 @@ export default function Header() {
 
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, item: typeof NAV_ITEMS[0]) => {
     setIsMobileMenuOpen(false);
+
+    if (item.id === 'inscripcion') {
+      e.preventDefault();
+      window.dispatchEvent(new CustomEvent('open-whatsapp'));
+      return;
+    }
 
     if (item.id === 'galeria') {
       // Dejar navegar normalmente a la página de galería
@@ -135,13 +140,12 @@ export default function Header() {
               )}
             </Link>
           ))}
-          <Link
-            href="/#inscripcion"
-            onClick={(e) => handleNavClick(e, NAV_ITEMS[4])}
-            className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-stone-50 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 shadow-sm shadow-emerald-950/10 hover:shadow-emerald-950/20"
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('open-whatsapp'))}
+            className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-stone-50 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 shadow-sm shadow-emerald-950/10 hover:shadow-emerald-950/20 cursor-pointer"
           >
-            Reservar Cupo
-          </Link>
+            Contactanos
+          </button>
         </nav>
 
         {/* Botón menú móvil */}
@@ -175,13 +179,15 @@ export default function Header() {
               {item.label}
             </Link>
           ))}
-          <Link
-            href="/#inscripcion"
-            onClick={(e) => handleNavClick(e, NAV_ITEMS[4])}
-            className="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-stone-50 rounded-xl text-center font-semibold tracking-wide transition duration-300 shadow-sm"
+          <button
+            onClick={() => {
+              setIsMobileMenuOpen(false);
+              window.dispatchEvent(new CustomEvent('open-whatsapp'));
+            }}
+            className="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-stone-50 rounded-xl text-center font-semibold tracking-wide transition duration-300 shadow-sm cursor-pointer"
           >
-            Reservar Cupo
-          </Link>
+            Contactanos
+          </button>
         </nav>
       </div>
     </header>
