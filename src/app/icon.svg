@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32">
+  <!-- Fondo circular verde esmeralda (emerald-700 / #047857) -->
+  <circle cx="12" cy="12" r="12" fill="#047857" />
+  
+  <!-- Icono de estrella/destello (Sparkle) en color crema suave (#fafaf9) -->
+  <path d="m12 6-1.434 4.36a1.5 1.5 0 0 1-.956.956L5.25 12.75l4.36 1.434c.42.138.749.467.887.887l1.503 4.569 1.503-4.569a1.5 1.5 0 0 1 .887-.887l4.569-1.503-4.569-1.503a1.5 1.5 0 0 1-.887-.887Z" fill="#fafaf9" />
+</svg>
