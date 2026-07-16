@@ -17,9 +17,9 @@ export async function GET(request: Request) {
   const folder = searchParams.get('folder');
   const tag = searchParams.get('tag');
 
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_CLIENT_ID;
-  const apiSecret = process.env.NEXT_PUBLIC_CLOUDINARY_CLIENT_SECRET;
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+  const apiKey = process.env.CLOUDINARY_CLIENT_ID;
+  const apiSecret = process.env.CLOUDINARY_CLIENT_SECRET;
 
   // Si no hay configuración de Cloudinary
   if (!cloudName || !apiKey || !apiSecret || apiKey.includes('<your_api_key>') || apiSecret.includes('<your_api_secret>')) {
