@@ -54,6 +54,14 @@ export default function FormRegister() {
       });
     } catch (err) {
       console.error('Error recording registration:', err);
+      
+      // Intentar reactivar Supabase si la llamada falló (posible base de datos pausada)
+      try {
+        await fetch('/api/supabase/restore', { method: 'POST' });
+      } catch (restoreErr) {
+        console.error('Error trying to restore Supabase:', restoreErr);
+      }
+
       setStatus('error');
     }
   };
@@ -185,6 +193,12 @@ export default function FormRegister() {
                   placeholder="Cuéntanos si tienes alguna intención o necesidad específica..."
                 />
               </div>
+
+              {status === 'error' && (
+                <div className="p-4 bg-amber-50 border border-amber-200 text-stone-700 text-sm rounded-2xl">
+                  Hubo un problema al enviar la pre-inscripción. Si la base de datos estaba inactiva, la estamos reactivando automáticamente. Por favor, aguarda unos segundos e intenta confirmar de nuevo.
+                </div>
+              )}
 
               {/* Botón de Enviar */}
               <button
