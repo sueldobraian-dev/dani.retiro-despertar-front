@@ -26,3 +26,6 @@ Para ver los detalles completos de cada área, consulta los documentos de refere
 - **Mobile-First:** Las clases base de Tailwind CSS se aplican directamente al móvil sin prefijos. Los breakpoints (`md:`, `lg:`) se reservan para pantallas grandes.
 - **Identidad Visual:** Utilizar tonos cálidos (`bg-stone-50`, `bg-amber-50/40`), textos legibles pero suaves (`text-stone-800`), formas redondeadas (`rounded-2xl` o `rounded-3xl`) y sombras sutiles.
 - **Rendimiento:** Cargar imágenes críticas con `priority` y optimizarlas adecuadamente.
+- **Sin Mocks de Datos:** En el caso que sea necesario simular datos de prueba, se deben utilizar archivos JSON dentro de la carpeta `data` y mockear las respuestas en los servidores serverless.
+- **Seguridad en Formularios (RLS):** Toda inserción de datos personales (como en `registrations`) debe respetar la política RLS en Supabase: permitir inserción pública (`INSERT`) pero restringir lectura pública (`SELECT`).
+- **Manejo de Resiliencia (Auto-Restore):** Si una transacción a Supabase falla en el cliente (debido a la pausa de inactividad de 2 días del tier gratuito), el código debe invocar el endpoint POST `/api/supabase/restore` para despertar el proyecto y solicitar de forma amigable al usuario que reintente en unos segundos.
