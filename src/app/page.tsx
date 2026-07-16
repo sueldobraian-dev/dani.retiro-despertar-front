@@ -20,7 +20,7 @@ export default function Home() {
       <FeedbackCarousel />
 
       {/* 4. Formulario de Inscripción */}
-      <FormRegister />
+      {/* <FormRegister /> */}
     </main>
   );
 }
