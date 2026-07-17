@@ -1,6 +1,17 @@
 import { NextResponse } from 'next/server';
 
-export async function POST() {
+export async function POST(request: Request) {
+  // Validar origen para prevenir abuso externo (CSRF)
+  const host = request.headers.get('host');
+  const referer = request.headers.get('referer');
+
+  if (referer && host && !referer.includes(host)) {
+    return NextResponse.json(
+      { error: 'No autorizado: Petición restringida al mismo origen (Same-Origin)' },
+      { status: 403 }
+    );
+  }
+
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
   const token = process.env.SUPABASE_MANAGEMENT_PAT;
 
