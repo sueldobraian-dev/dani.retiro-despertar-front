@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { MediaItem, Folder } from '@/data/galleryMock';
 
@@ -25,6 +25,9 @@ export default function MediaGallery() {
   // Lightbox state
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
+  // Caché de recursos de la galería en memoria
+  const cacheRef = useRef<Record<string, MediaItem[]>>({});
+
   const imagesOnly = mediaItems.filter((item) => item.type === 'image');
 
   const handleNextImage = () => {
@@ -37,29 +40,27 @@ export default function MediaGallery() {
     setSelectedImageIndex((prev) => (prev !== null && prev > 0 ? prev - 1 : imagesOnly.length - 1));
   };
 
+  const triggerDownload = (url: string, filename: string) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const downloadImage = async (url: string, filename: string) => {
     try {
-      let downloadUrl = url;
       if (url.includes('res.cloudinary.com')) {
-        downloadUrl = url.replace('/upload/', '/upload/fl_attachment/');
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.setAttribute('download', filename);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const downloadUrl = url.replace('/upload/', '/upload/fl_attachment/');
+        triggerDownload(downloadUrl, filename);
         return;
       }
       
       const response = await fetch(url);
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.setAttribute('download', filename);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      triggerDownload(blobUrl, filename);
       window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error('Error downloading image:', error);
@@ -159,39 +160,38 @@ export default function MediaGallery() {
   // 4. Obtener el contenido multimedia de la carpeta activa o subcarpeta dinámicamente
   useEffect(() => {
     const isLocation = ubicaciones.some((u) => u.path === activeFolder);
+    const targetTag = isLocation ? activeSubfolder?.name : activeFolder;
+
+    if (isLocation && !activeSubfolder) {
+      setMediaItems([]);
+      return;
+    }
+
+    if (!targetTag) return;
+
+    // Utilizar caché si está disponible para evitar peticiones de red redundantes
+    if (cacheRef.current[targetTag]) {
+      setMediaItems(cacheRef.current[targetTag]);
+      setVisibleCount(10);
+      setLoading(false);
+      return;
+    }
 
     const fetchMedia = async () => {
       setMediaItems([]);
       setVisibleCount(10);
-      if (isLocation) {
-        if (!activeSubfolder) {
-          return;
+      setLoading(true);
+      try {
+        const response = await fetch(`/api/gallery?tag=${encodeURIComponent(targetTag)}`);
+        if (response.ok) {
+          const data = await response.json();
+          cacheRef.current[targetTag] = data;
+          setMediaItems(data);
         }
-        setLoading(true);
-        try {
-          const response = await fetch(`/api/gallery?tag=${encodeURIComponent(activeSubfolder.name)}`);
-          if (response.ok) {
-            const data = await response.json();
-            setMediaItems(data);
-          }
-        } catch (error) {
-          console.error('Error fetching media assets:', error);
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        setLoading(true);
-        try {
-          const response = await fetch(`/api/gallery?tag=${encodeURIComponent(activeFolder)}`);
-          if (response.ok) {
-            const data = await response.json();
-            setMediaItems(data);
-          }
-        } catch (error) {
-          console.error('Error fetching media assets:', error);
-        } finally {
-          setLoading(false);
-        }
+      } catch (error) {
+        console.error('Error fetching media assets:', error);
+      } finally {
+        setLoading(false);
       }
     };
 

@@ -129,6 +129,9 @@ export default function UpcomingRetreats() {
     return `${startDay} de ${capitalizedMonth} al ${endDay} de ${capitalizedEndMonth} de ${year}`;
   };
 
+  const nextRetreat = retreats.find(r => r.is_confirmed) || retreats[0];
+  const otherRetreats = retreats.filter(r => r.id !== nextRetreat?.id);
+
   return (
     <section id="proximos-retiros" className="py-16 bg-stone-50 border-y border-stone-200/30 min-h-[400px] flex items-center">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
@@ -213,157 +216,150 @@ export default function UpcomingRetreats() {
 
         {/* Renderizado de Datos */}
         {!loading && !error && retreats.length > 0 && (
-          (() => {
-            const nextRetreat = retreats.find(r => r.is_confirmed) || retreats[0];
-            const otherRetreats = retreats.filter(r => r.id !== nextRetreat?.id);
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            return (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Próximo Retiro Destacado (Grande) */}
+            {nextRetreat && (
+              <div className="lg:col-span-2 bg-white rounded-3xl border border-stone-200/50 shadow-md p-6 sm:p-8 md:p-10 flex flex-col justify-between relative overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-50 rounded-full blur-3xl opacity-60 pointer-events-none" />
 
-                {/* Próximo Retiro Destacado (Grande) */}
-                {nextRetreat && (
-                  <div className="lg:col-span-2 bg-white rounded-3xl border border-stone-200/50 shadow-md p-6 sm:p-8 md:p-10 flex flex-col justify-between relative overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-50 rounded-full blur-3xl opacity-60 pointer-events-none" />
+                <div className="relative z-10">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-100">
+                    <Clock className="w-3.5 h-3.5" /> Próxima Fecha
+                  </span>
 
-                    <div className="relative z-10">
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-100">
-                        <Clock className="w-3.5 h-3.5" /> Próxima Fecha
+                  <h3 className="text-2xl sm:text-3xl font-serif text-stone-800 mt-4 font-bold">
+                    {nextRetreat.title}
+                  </h3>
+
+                  <div className="mt-6 space-y-4 text-stone-600">
+                    <div className="flex items-center gap-3">
+                      <Calendar className="w-5 h-5 text-emerald-800 flex-shrink-0" />
+                      <span className="text-sm sm:text-base font-medium text-stone-800">
+                        {formatRetreatDate(nextRetreat.start_date, nextRetreat.end_date)}
                       </span>
+                    </div>
 
-                      <h3 className="text-2xl sm:text-3xl font-serif text-stone-800 mt-4 font-bold">
-                        {nextRetreat.title}
-                      </h3>
-
-                      <div className="mt-6 space-y-4 text-stone-600">
-                        <div className="flex items-center gap-3">
-                          <Calendar className="w-5 h-5 text-emerald-800 flex-shrink-0" />
-                          <span className="text-sm sm:text-base font-medium text-stone-800">
-                            {formatRetreatDate(nextRetreat.start_date, nextRetreat.end_date)}
+                    <div className="flex items-start gap-3">
+                      <MapPin className="w-5 h-5 text-emerald-800 flex-shrink-0 mt-0.5" />
+                      <div className="flex flex-col gap-1">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                          <span className="text-sm sm:text-base text-stone-800 font-semibold">
+                            {nextRetreat.locations?.name || 'Ubicación a confirmar'}
                           </span>
+                          {nextRetreat.locations?.address && (
+                            <span className="text-xs sm:text-sm text-stone-500">
+                              ({nextRetreat.locations.address})
+                            </span>
+                          )}
+                          {nextRetreat.locations?.maps_url && (
+                            <a
+                              href={nextRetreat.locations.maps_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-emerald-700 hover:text-emerald-900 underline font-semibold transition"
+                            >
+                              (Ver en Google Maps)
+                            </a>
+                          )}
                         </div>
-
-                        <div className="flex items-start gap-3">
-                          <MapPin className="w-5 h-5 text-emerald-800 flex-shrink-0 mt-0.5" />
-                          <div className="flex flex-col gap-1">
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-                              <span className="text-sm sm:text-base text-stone-800 font-semibold">
-                                {nextRetreat.locations?.name || 'Ubicación a confirmar'}
-                              </span>
-                              {nextRetreat.locations?.address && (
-                                <span className="text-xs sm:text-sm text-stone-500">
-                                  ({nextRetreat.locations.address})
-                                </span>
-                              )}
-                              {nextRetreat.locations?.maps_url && (
-                                <a
-                                  href={nextRetreat.locations.maps_url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-xs text-emerald-700 hover:text-emerald-900 underline font-semibold transition"
-                                >
-                                  (Ver en Google Maps)
-                                </a>
-                              )}
-                            </div>
-                            {nextRetreat.locations?.directions && (
-                              <p className="text-xs text-stone-500 bg-stone-50 border border-stone-200/50 p-3 rounded-2xl mt-1.5 leading-relaxed max-w-lg">
-                                <span className="font-semibold text-emerald-800">Cómo llegar:</span> {nextRetreat.locations.directions}
-                              </p>
-                            )}
-                          </div>
-                        </div>
+                        {nextRetreat.locations?.directions && (
+                          <p className="text-xs text-stone-500 bg-stone-50 border border-stone-200/50 p-3 rounded-2xl mt-1.5 leading-relaxed max-w-lg">
+                            <span className="font-semibold text-emerald-800">Cómo llegar:</span> {nextRetreat.locations.directions}
+                          </p>
+                        )}
                       </div>
                     </div>
-
-                    <div className="mt-8 relative z-10 border-t border-stone-100 pt-6">
-                      <span className="block text-xs font-bold text-stone-400 uppercase tracking-wider">
-                        La experiencia comienza en:
-                      </span>
-                      <CountdownTimer targetDate={nextRetreat.start_date} />
-                    </div>
-                  </div>
-                )}
-
-                {/* Calendario de fechas programadas secundarias (Pequeñas) */}
-                <div className="bg-white rounded-3xl border border-stone-200/50 shadow-md p-6 sm:p-8 flex flex-col justify-between animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
-                  <div>
-                    <h3 className="text-lg font-serif font-bold text-stone-800 border-b border-stone-100 pb-4">
-                      Calendario de Retiros
-                    </h3>
-
-                    <div className="mt-6 space-y-6">
-                      {otherRetreats.length > 0 ? (
-                        otherRetreats.map((retreat) => (
-                          <div key={retreat.id} className="flex flex-col space-y-2 border-b border-stone-50 pb-4 last:border-0 last:pb-0">
-                            <div className="flex items-start justify-between gap-3">
-                              <h4 className="font-semibold text-stone-800 text-sm leading-snug">
-                                {retreat.title}
-                              </h4>
-                              {!retreat.is_confirmed && (
-                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-amber-50 text-amber-800 border border-amber-200/50 flex-shrink-0">
-                                  <Info className="w-3 h-3" /> Proximamente
-                                </span>
-                              )}
-                            </div>
-
-                            <div className="space-y-2 text-xs text-stone-500">
-                              <div className="flex items-center gap-2">
-                                <Calendar className="w-4 h-4 text-stone-400 flex-shrink-0" />
-                                <span>
-                                  {retreat.is_confirmed
-                                    ? formatRetreatDate(retreat.start_date, retreat.end_date)
-                                    : retreat.status_text || 'Próximamente confirmamos'}
-                                </span>
-                              </div>
-
-                              <div className="flex items-start gap-2">
-                                <MapPin className="w-4 h-4 text-stone-400 flex-shrink-0 mt-0.5" />
-                                <div className="flex flex-col gap-0.5">
-                                  <div className="text-stone-700">
-                                    <span className="font-semibold">{retreat.locations?.name || 'A confirmar'}</span>
-                                    {retreat.locations?.address && <span className="text-stone-400"> ({retreat.locations.address})</span>}
-                                  </div>
-                                  <div className="flex items-center gap-2 mt-0.5">
-                                    {retreat.locations?.maps_url && (
-                                      <a
-                                        href={retreat.locations.maps_url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="text-[10px] text-emerald-700 hover:text-emerald-900 underline font-semibold transition inline-block"
-                                      >
-                                        Ver mapa
-                                      </a>
-                                    )}
-                                    {retreat.locations?.directions && (
-                                      <span className="text-[10px] text-stone-400" title={retreat.locations.directions}>
-                                        • indicaciones disponibles
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-sm text-stone-500">No hay otras fechas programadas en este momento.</p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="mt-8 pt-4 border-t border-stone-100">
-                    <a
-                      href="#inscripcion"
-                      className="block w-full py-3 text-center bg-stone-100 hover:bg-stone-200/80 text-stone-700 hover:text-stone-900 font-semibold rounded-2xl text-xs transition duration-300 border border-stone-200/30"
-                    >
-                      Consultar por otras fechas
-                    </a>
                   </div>
                 </div>
 
+                <div className="mt-8 relative z-10 border-t border-stone-100 pt-6">
+                  <span className="block text-xs font-bold text-stone-400 uppercase tracking-wider">
+                    La experiencia comienza en:
+                  </span>
+                  <CountdownTimer targetDate={nextRetreat.start_date} />
+                </div>
               </div>
-            );
-          })()
+            )}
+
+            {/* Calendario de fechas programadas secundarias (Pequeñas) */}
+            <div className="bg-white rounded-3xl border border-stone-200/50 shadow-md p-6 sm:p-8 flex flex-col justify-between animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
+              <div>
+                <h3 className="text-lg font-serif font-bold text-stone-800 border-b border-stone-100 pb-4">
+                  Calendario de Retiros
+                </h3>
+
+                <div className="mt-6 space-y-6">
+                  {otherRetreats.length > 0 ? (
+                    otherRetreats.map((retreat) => (
+                      <div key={retreat.id} className="flex flex-col space-y-2 border-b border-stone-50 pb-4 last:border-0 last:pb-0">
+                        <div className="flex items-start justify-between gap-3">
+                          <h4 className="font-semibold text-stone-800 text-sm leading-snug">
+                            {retreat.title}
+                          </h4>
+                          {!retreat.is_confirmed && (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-amber-50 text-amber-800 border border-amber-200/50 flex-shrink-0">
+                              <Info className="w-3 h-3" /> Proximamente
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="space-y-2 text-xs text-stone-500">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-stone-400 flex-shrink-0" />
+                            <span>
+                              {retreat.is_confirmed
+                                ? formatRetreatDate(retreat.start_date, retreat.end_date)
+                                : retreat.status_text || 'Próximamente confirmamos'}
+                            </span>
+                          </div>
+
+                          <div className="flex items-start gap-2">
+                            <MapPin className="w-4 h-4 text-stone-400 flex-shrink-0 mt-0.5" />
+                            <div className="flex flex-col gap-0.5">
+                              <div className="text-stone-700">
+                                <span className="font-semibold">{retreat.locations?.name || 'A confirmar'}</span>
+                                {retreat.locations?.address && <span className="text-stone-400"> ({retreat.locations.address})</span>}
+                              </div>
+                              <div className="flex items-center gap-2 mt-0.5">
+                                {retreat.locations?.maps_url && (
+                                  <a
+                                    href={retreat.locations.maps_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-[10px] text-emerald-700 hover:text-emerald-900 underline font-semibold transition inline-block"
+                                  >
+                                    Ver mapa
+                                  </a>
+                                )}
+                                {retreat.locations?.directions && (
+                                  <span className="text-[10px] text-stone-400" title={retreat.locations.directions}>
+                                    • indicaciones disponibles
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-stone-500">No hay otras fechas programadas en este momento.</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-8 pt-4 border-t border-stone-100">
+                <a
+                  href="#inscripcion"
+                  className="block w-full py-3 text-center bg-stone-100 hover:bg-stone-200/80 text-stone-700 hover:text-stone-900 font-semibold rounded-2xl text-xs transition duration-300 border border-stone-200/30"
+                >
+                  Consultar por otras fechas
+                </a>
+              </div>
+            </div>
+
+          </div>
         )}
 
       </div>
