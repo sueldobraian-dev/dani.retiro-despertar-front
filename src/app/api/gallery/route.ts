@@ -10,6 +10,25 @@ function buildCloudinaryUrl(cloudName: string, resource: any): string {
     .replace('{format}', resource.format || 'jpg');
 }
 
+function getAssetOrder(resource: any): number {
+  // 1. Intentar obtener el orden desde los metadatos de contexto
+  const contextOrder = resource.context?.custom?.order || resource.context?.order;
+  if (contextOrder) {
+    const parsed = parseInt(contextOrder, 10);
+    if (!isNaN(parsed)) return parsed;
+  }
+
+  // 2. Intentar obtener el orden desde el prefijo numérico del nombre de archivo (ej: "01_nombre.jpg" o "02-nombre.png")
+  const filename = resource.public_id.split('/').pop() || '';
+  const match = filename.match(/^(\d+)[-_]/);
+  if (match) {
+    const parsed = parseInt(match[1], 10);
+    if (!isNaN(parsed)) return parsed;
+  }
+
+  return Infinity;
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const getFolders = searchParams.get('getFolders');
@@ -84,8 +103,16 @@ export async function GET(request: Request) {
             alt: resource.public_id.split('/').pop() || 'Imagen de Cloudinary',
             title: resource.public_id.split('/').pop() || 'Imagen',
             folder: tag,
+            order: getAssetOrder(resource),
           }));
-          return NextResponse.json(cloudinaryResources);
+
+          // Ordenar recursos por prioridad
+          const sortedResources = cloudinaryResources.sort((a: any, b: any) => {
+            if (a.order === b.order) return 0;
+            return a.order - b.order;
+          });
+
+          return NextResponse.json(sortedResources);
         }
       }
       return NextResponse.json(
@@ -102,7 +129,8 @@ export async function GET(request: Request) {
   if (folder) {
     try {
       const auth = Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
-      const url = `https://api.cloudinary.com/v1_1/${cloudName}/resources/image?prefix=${encodeURIComponent(folder)}&type=upload&max_results=50`;
+      // Agregamos context=true para traer metadatos desde la API de Administración de Cloudinary
+      const url = `https://api.cloudinary.com/v1_1/${cloudName}/resources/image?prefix=${encodeURIComponent(folder)}&type=upload&max_results=50&context=true`;
 
       const res = await fetch(url, {
         headers: {
@@ -120,8 +148,16 @@ export async function GET(request: Request) {
           alt: resource.public_id.split('/').pop() || 'Imagen de Cloudinary',
           title: resource.public_id.split('/').pop() || 'Imagen',
           folder: folder,
+          order: getAssetOrder(resource),
         }));
-        return NextResponse.json(cloudinaryResources);
+
+        // Ordenar recursos por prioridad
+        const sortedResources = cloudinaryResources.sort((a: any, b: any) => {
+          if (a.order === b.order) return 0;
+          return a.order - b.order;
+        });
+
+        return NextResponse.json(sortedResources);
       }
       return NextResponse.json(
         { error: `Error al obtener recursos del prefijo "${folder}": ${res.statusText}` },
