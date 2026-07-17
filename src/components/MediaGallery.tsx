@@ -22,6 +22,68 @@ export default function MediaGallery() {
   // Cantidad de imágenes visibles (paginación de a 10)
   const [visibleCount, setVisibleCount] = useState<number>(10);
 
+  // Lightbox state
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+
+  const imagesOnly = mediaItems.filter((item) => item.type === 'image');
+
+  const handleNextImage = () => {
+    if (selectedImageIndex === null || imagesOnly.length === 0) return;
+    setSelectedImageIndex((prev) => (prev !== null && prev < imagesOnly.length - 1 ? prev + 1 : 0));
+  };
+
+  const handlePrevImage = () => {
+    if (selectedImageIndex === null || imagesOnly.length === 0) return;
+    setSelectedImageIndex((prev) => (prev !== null && prev > 0 ? prev - 1 : imagesOnly.length - 1));
+  };
+
+  const downloadImage = async (url: string, filename: string) => {
+    try {
+      let downloadUrl = url;
+      if (url.includes('res.cloudinary.com')) {
+        downloadUrl = url.replace('/upload/', '/upload/fl_attachment/');
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        return;
+      }
+      
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error('Error downloading image:', error);
+      window.open(url, '_blank');
+    }
+  };
+
+  // Keyboard navigation for Lightbox
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (selectedImageIndex === null) return;
+      if (e.key === 'Escape') {
+        setSelectedImageIndex(null);
+      } else if (e.key === 'ArrowRight') {
+        handleNextImage();
+      } else if (e.key === 'ArrowLeft') {
+        handlePrevImage();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedImageIndex, imagesOnly.length]);
+
   // 1. Obtener la estructura de carpetas de forma dinámica al montar
   useEffect(() => {
     const fetchFolders = async () => {
@@ -254,11 +316,11 @@ export default function MediaGallery() {
           )}
         </div>
 
-        {/* Grid */}
+        {/* Grid (Masonry using CSS Columns) */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6 space-y-6">
             {[1, 2, 3, 4].map((n) => (
-              <div key={n} className="w-full aspect-video rounded-2xl border border-stone-200/60 overflow-hidden bg-stone-200 animate-pulse" />
+              <div key={n} className="break-inside-avoid mb-6 w-full aspect-[4/3] rounded-2xl border border-stone-200/60 overflow-hidden bg-stone-200 animate-pulse" />
             ))}
           </div>
         ) : mediaItems.length === 0 ? (
@@ -267,29 +329,40 @@ export default function MediaGallery() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6 space-y-6">
               {mediaItems.slice(0, visibleCount).map((item) => (
                 <div
                   key={item.id}
-                  className="relative w-full aspect-video rounded-2xl overflow-hidden bg-stone-100 border border-stone-200 shadow-sm hover:shadow-md transition-all duration-300 group"
+                  className={`break-inside-avoid mb-6 w-full rounded-2xl overflow-hidden bg-stone-100 border border-stone-200 shadow-sm hover:shadow-md transition-all duration-300 group inline-block ${
+                    item.type === 'image' ? 'cursor-pointer' : ''
+                  }`}
+                  onClick={() => {
+                    if (item.type === 'image') {
+                      const idx = imagesOnly.findIndex((img) => img.id === item.id);
+                      if (idx !== -1) setSelectedImageIndex(idx);
+                    }
+                  }}
                 >
                   {item.type === 'image' ? (
-                    <Image
-                      src={item.src}
-                      alt={item.alt}
-                      fill
-                      loading="lazy"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                    />
+                    <div className="relative w-full overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={item.src}
+                        alt={item.alt}
+                        loading="lazy"
+                        className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500 ease-out rounded-2xl"
+                      />
+                    </div>
                   ) : (
-                    <iframe
-                      src={`https://www.youtube.com/embed/${item.src}?rel=0`}
-                      title={item.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      className="w-full h-full border-0"
-                    />
+                    <div className="relative w-full aspect-video">
+                      <iframe
+                        src={`https://www.youtube.com/embed/${item.src}?rel=0`}
+                        title={item.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-full border-0"
+                      />
+                    </div>
                   )}
                 </div>
               ))}
@@ -306,6 +379,83 @@ export default function MediaGallery() {
               </div>
             )}
           </>
+        )}
+
+        {/* Lightbox Modal */}
+        {selectedImageIndex !== null && imagesOnly[selectedImageIndex] && (
+          <div className="fixed inset-0 z-50 flex flex-col items-center justify-between p-4 bg-stone-950/95 backdrop-blur-sm transition-opacity duration-300">
+            {/* Top Bar */}
+            <div className="w-full flex items-center justify-between max-w-7xl px-4 py-2">
+              <span className="text-stone-400 text-sm font-medium">
+                {selectedImageIndex + 1} de {imagesOnly.length}
+              </span>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => downloadImage(imagesOnly[selectedImageIndex].src, imagesOnly[selectedImageIndex].alt || 'foto-retiro')}
+                  className="flex items-center gap-2 px-4 py-2 text-stone-200 hover:text-white bg-stone-900/80 hover:bg-stone-800 rounded-full text-xs font-semibold border border-stone-800 transition-all duration-300 shadow-sm"
+                  title="Descargar Foto"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                  </svg>
+                  Descargar
+                </button>
+                <button
+                  onClick={() => setSelectedImageIndex(null)}
+                  className="p-2 text-stone-400 hover:text-white bg-stone-900/80 hover:bg-stone-800 rounded-full border border-stone-800 transition-all duration-300"
+                  aria-label="Cerrar modal"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {/* Main Area: Image and Navigation Arrows */}
+            <div className="relative flex-1 w-full flex items-center justify-center max-w-7xl">
+              {/* Left Arrow */}
+              <button
+                onClick={handlePrevImage}
+                className="absolute left-2 md:left-4 z-10 p-3 text-stone-400 hover:text-white bg-stone-900/60 hover:bg-stone-800 rounded-full transition-all duration-300 border border-stone-800/40"
+                aria-label="Imagen anterior"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                </svg>
+              </button>
+
+              {/* Image Container */}
+              <div className="relative w-full h-[70vh] max-w-4xl flex items-center justify-center p-2">
+                <Image
+                  src={imagesOnly[selectedImageIndex].src}
+                  alt={imagesOnly[selectedImageIndex].alt}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 1024px"
+                  className="object-contain max-h-full max-w-full select-none rounded-2xl"
+                  priority
+                />
+              </div>
+
+              {/* Right Arrow */}
+              <button
+                onClick={handleNextImage}
+                className="absolute right-2 md:right-4 z-10 p-3 text-stone-400 hover:text-white bg-stone-900/60 hover:bg-stone-800 rounded-full transition-all duration-300 border border-stone-800/40"
+                aria-label="Imagen siguiente"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Bottom Bar: Title/Caption */}
+            <div className="w-full text-center py-4 px-6 max-w-2xl">
+              <p className="text-stone-300 text-sm tracking-wide font-medium">
+                {imagesOnly[selectedImageIndex].title || imagesOnly[selectedImageIndex].alt}
+              </p>
+            </div>
+          </div>
         )}
 
       </div>
