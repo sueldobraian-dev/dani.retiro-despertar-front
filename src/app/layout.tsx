@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import WhatsAppFloat from '@/components/WhatsAppFloat';
 import '../styles/globals.css';
 
@@ -68,6 +69,7 @@ export default function RootLayout({
       <body className="bg-stone-50 text-stone-800 font-sans antialiased min-h-screen selection:bg-emerald-800 selection:text-stone-50">
         <Header />
         {children}
+        <Footer />
         <WhatsAppFloat />
       </body>
     </html>
