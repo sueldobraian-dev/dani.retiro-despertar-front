@@ -1,5 +1,4 @@
-'use client';
-
+import { Instagram, Facebook } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Footer() {
@@ -11,13 +10,35 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo & Copyright */}
-          <div className="text-center md:text-left">
-            <h3 className="font-serif text-stone-100 text-lg tracking-wider font-semibold">
-              Retiro Despertar
-            </h3>
-            <p className="text-xs text-stone-500 mt-1">
-              © {new Date().getFullYear()} Todos los derechos reservados.
-            </p>
+          <div className="text-center md:text-left flex flex-col gap-3">
+            <div>
+              <h3 className="font-serif text-stone-100 text-lg tracking-wider font-semibold">
+                Retiro Despertar
+              </h3>
+              <p className="text-xs text-stone-500 mt-1">
+                © {new Date().getFullYear()} Todos los derechos reservados.
+              </p>
+            </div>
+            <div className="flex justify-center md:justify-start gap-4 text-stone-400">
+              <a
+                href="https://www.instagram.com/despertar.retiroholistico"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-emerald-400 transition-colors duration-300"
+                aria-label="Instagram"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a
+                href="https://www.facebook.com/share/1BVTYJAse8/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-emerald-400 transition-colors duration-300"
+                aria-label="Facebook"
+              >
+                <Facebook className="w-5 h-5" />
+              </a>
+            </div>
           </div>
 
           {/* Metadata & Credits */}

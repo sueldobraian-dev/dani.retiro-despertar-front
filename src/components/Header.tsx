@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Menu, X, Sparkles } from 'lucide-react';
+import { Menu, X, Sparkles, Instagram, Facebook } from 'lucide-react';
 
 const NAV_ITEMS = [
   { id: 'inicio', label: 'Inicio', path: '/' },
@@ -149,6 +149,27 @@ export default function Header() {
               )}
             </Link>
           ))}
+          <div className="h-4 w-px bg-stone-200" />
+          <div className="flex items-center gap-3">
+            <a
+              href="https://www.instagram.com/despertar.retiroholistico"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-stone-500 hover:text-emerald-800 transition-colors duration-300"
+              aria-label="Instagram"
+            >
+              <Instagram className="w-4 h-4" />
+            </a>
+            <a
+              href="https://www.facebook.com/share/1BVTYJAse8/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-stone-500 hover:text-emerald-800 transition-colors duration-300"
+              aria-label="Facebook"
+            >
+              <Facebook className="w-4 h-4" />
+            </a>
+          </div>
           <button
             onClick={() => window.dispatchEvent(new CustomEvent('open-whatsapp'))}
             className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-stone-50 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 shadow-sm shadow-emerald-950/10 hover:shadow-emerald-950/20 cursor-pointer"
@@ -197,6 +218,25 @@ export default function Header() {
           >
             Contactanos
           </button>
+
+          <div className="flex justify-center gap-6 pt-4 border-t border-stone-200/50">
+            <a
+              href="https://www.instagram.com/despertar.retiroholistico"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-stone-600 hover:text-emerald-800 flex items-center gap-2 text-sm font-medium transition-colors"
+            >
+              <Instagram className="w-4 h-4" /> Instagram
+            </a>
+            <a
+              href="https://www.facebook.com/share/1BVTYJAse8/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-stone-600 hover:text-emerald-800 flex items-center gap-2 text-sm font-medium transition-colors"
+            >
+              <Facebook className="w-4 h-4" /> Facebook
+            </a>
+          </div>
         </nav>
       </div>
     </header>
