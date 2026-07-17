@@ -68,26 +68,35 @@ export default function Header() {
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, item: typeof NAV_ITEMS[0]) => {
     setIsMobileMenuOpen(false);
 
-    if (item.id === 'inscripcion') {
-      e.preventDefault();
-      window.dispatchEvent(new CustomEvent('open-whatsapp'));
-      return;
-    }
-
-    if (item.id === 'galeria') {
-      // Dejar navegar normalmente a la página de galería
-      return;
-    }
-
-    if (pathname === '/') {
-      // Si estamos en la Home, hacemos scroll suave
-      e.preventDefault();
-      const element = document.getElementById(item.id);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setActiveSection(item.id);
-        window.history.replaceState(null, '', `#${item.id}`);
+    const strategies = [
+      {
+        condition: item.id === 'inscripcion',
+        run: () => {
+          e.preventDefault();
+          window.dispatchEvent(new CustomEvent('open-whatsapp'));
+        }
+      },
+      {
+        condition: item.id === 'galeria',
+        run: () => {}
+      },
+      {
+        condition: pathname === '/',
+        run: () => {
+          e.preventDefault();
+          const element = document.getElementById(item.id);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            setActiveSection(item.id);
+            window.history.replaceState(null, '', `#${item.id}`);
+          }
+        }
       }
+    ];
+
+    const matched = strategies.find(s => s.condition);
+    if (matched) {
+      matched.run();
     }
   };
 

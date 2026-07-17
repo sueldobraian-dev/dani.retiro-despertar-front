@@ -158,17 +158,16 @@ export async function GET(request: Request) {
   const folder = searchParams.get('folder');
 
   try {
-    if (getFolders === 'true') {
-      return handleGetFolders();
-    }
-    if (parentFolder) {
-      return await handleParentFolder(parentFolder, creds);
-    }
-    if (tag) {
-      return await handleTag(tag, creds.cloudName);
-    }
-    if (folder) {
-      return await handleFolder(folder, creds);
+    const strategies = [
+      { condition: getFolders === 'true', run: () => handleGetFolders() },
+      { condition: !!parentFolder, run: () => handleParentFolder(parentFolder!, creds) },
+      { condition: !!tag, run: () => handleTag(tag!, creds.cloudName) },
+      { condition: !!folder, run: () => handleFolder(folder!, creds) },
+    ];
+
+    const matched = strategies.find(s => s.condition);
+    if (matched) {
+      return await matched.run();
     }
 
     return NextResponse.json(
