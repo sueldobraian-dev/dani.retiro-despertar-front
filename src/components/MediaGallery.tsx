@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { MediaItem, Folder } from '@/data/galleryMock';
+import { Share2, Check } from 'lucide-react';
 
 export default function MediaGallery() {
   const [activeFolder, setActiveFolder] = useState<string>('gastronomia');
@@ -28,7 +29,33 @@ export default function MediaGallery() {
   // Caché de recursos de la galería en memoria
   const cacheRef = useRef<Record<string, MediaItem[]>>({});
 
-  const imagesOnly = mediaItems.filter((item) => item.type === 'image');
+  // Referencia para guardar la subcarpeta pendiente de seleccionar desde la URL (hash)
+  const pendingSubfolderRef = useRef<string | null>(null);
+
+  // Referencia para guardar la foto pendiente de abrir desde la URL (hash)
+  const pendingPhotoIdRef = useRef<string | null>(null);
+
+  // Set de IDs de imágenes que han fallado al cargar (404)
+  const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
+
+  // Estados de retroalimentación de copiado
+  const [copied, setCopied] = useState<boolean>(false);
+  const [copiedPhoto, setCopiedPhoto] = useState<boolean>(false);
+
+  const filteredMediaItems = mediaItems.filter((item) => !failedImages.has(item.id));
+  const imagesOnly = filteredMediaItems.filter((item) => item.type === 'image');
+
+  const handleShareGallery = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleSharePhoto = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopiedPhoto(true);
+    setTimeout(() => setCopiedPhoto(false), 2000);
+  };
 
   const handleNextImage = () => {
     if (selectedImageIndex === null || imagesOnly.length === 0) return;
@@ -56,7 +83,7 @@ export default function MediaGallery() {
         triggerDownload(downloadUrl, filename);
         return;
       }
-      
+
       const response = await fetch(url);
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
@@ -107,20 +134,63 @@ export default function MediaGallery() {
   // 2. Escuchar cambios en la URL (hash) para activar carpetas específicas
   useEffect(() => {
     const handleHashChange = () => {
-      if (window.location.hash === '#galeria-testimonios') {
+      const hash = window.location.hash;
+      if (!hash) return;
+
+      if (hash === '#galeria-testimonios' || hash === '#testimonios') {
         setActiveFolder('testimonios');
         const el = document.getElementById('galeria');
         if (el) el.scrollIntoView({ behavior: 'smooth' });
-      } else if (window.location.hash === '#galeria') {
+        return;
+      }
+
+      // Reconstruir la ruta desde el hash (ej: #chascomus-finca-los-coipos/2026-chascomus-abril/photo:123)
+      const rawPath = decodeURIComponent(hash.substring(1));
+      
+      let photoId: string | null = null;
+      let pathStr = rawPath;
+      
+      const photoIndex = rawPath.indexOf('/photo:');
+      if (photoIndex !== -1) {
+        photoId = rawPath.substring(photoIndex + 7);
+        pathStr = rawPath.substring(0, photoIndex);
+      }
+      
+      const parts = pathStr.split('/');
+      if (parts.length === 0) return;
+
+      const matchedFolder = [...ubicaciones, ...tematicas].find(f => {
+        return pathStr.startsWith(f.path) || f.path.endsWith(parts[0]);
+      });
+
+      if (matchedFolder) {
+        setActiveFolder(matchedFolder.path);
+        
+        // Si hay una segunda parte, se asume que es la subcarpeta
+        if (parts.length > 1) {
+          pendingSubfolderRef.current = parts[parts.length - 1];
+        } else {
+          pendingSubfolderRef.current = null;
+        }
+
+        if (photoId) {
+          pendingPhotoIdRef.current = photoId;
+        } else {
+          pendingPhotoIdRef.current = null;
+        }
+
         const el = document.getElementById('galeria');
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       }
     };
 
-    window.addEventListener('hashchange', handleHashChange);
-    handleHashChange(); // Check on mount
+    if (!loadingFolders && ubicaciones.length > 0) {
+      window.addEventListener('hashchange', handleHashChange);
+      handleHashChange(); // Verificar al cargar las carpetas
+    }
+
     return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
+  }, [loadingFolders, ubicaciones, tematicas]);
 
   // 3. Obtener subcarpetas cuando se selecciona una ubicación
   useEffect(() => {
@@ -139,7 +209,15 @@ export default function MediaGallery() {
           const data = await response.json();
           const folders = data.folders || [];
           setSubfolders(folders);
-          if (folders.length > 0) {
+
+          const pendingSub = pendingSubfolderRef.current;
+          const matchedSub = pendingSub
+            ? folders.find((f: Folder) => f.name === pendingSub || f.path === pendingSub || f.path.endsWith(pendingSub))
+            : null;
+
+          if (matchedSub) {
+            setActiveSubfolder(matchedSub);
+          } else if (folders.length > 0) {
             setActiveSubfolder(folders[0]);
           } else {
             setActiveSubfolder(null);
@@ -151,6 +229,7 @@ export default function MediaGallery() {
         setActiveSubfolder(null);
       } finally {
         setLoadingSubfolders(false);
+        pendingSubfolderRef.current = null; // Limpiar la referencia pendiente
       }
     };
 
@@ -160,18 +239,34 @@ export default function MediaGallery() {
   // 4. Obtener el contenido multimedia de la carpeta activa o subcarpeta dinámicamente
   useEffect(() => {
     const isLocation = ubicaciones.some((u) => u.path === activeFolder);
-    const targetTag = isLocation ? activeSubfolder?.name : activeFolder;
 
-    if (isLocation && !activeSubfolder) {
+    // Si la ubicación no tiene subcarpetas, buscamos imágenes directamente en la carpeta madre
+    const hasSubfolders = subfolders.length > 0;
+    const targetTag = (isLocation && hasSubfolders) ? activeSubfolder?.name : activeFolder;
+
+    if (isLocation && hasSubfolders && !activeSubfolder) {
       setMediaItems([]);
       return;
     }
 
     if (!targetTag) return;
 
+    const applyMediaItems = (items: MediaItem[]) => {
+      setMediaItems(items);
+      const pendingPhotoId = pendingPhotoIdRef.current;
+      if (pendingPhotoId) {
+        const imgs = items.filter((item) => item.type === 'image');
+        const idx = imgs.findIndex((img) => img.id === pendingPhotoId);
+        if (idx !== -1) {
+          setSelectedImageIndex(idx);
+        }
+        pendingPhotoIdRef.current = null;
+      }
+    };
+
     // Utilizar caché si está disponible para evitar peticiones de red redundantes
     if (cacheRef.current[targetTag]) {
-      setMediaItems(cacheRef.current[targetTag]);
+      applyMediaItems(cacheRef.current[targetTag]);
       setVisibleCount(10);
       setLoading(false);
       return;
@@ -186,7 +281,7 @@ export default function MediaGallery() {
         if (response.ok) {
           const data = await response.json();
           cacheRef.current[targetTag] = data;
-          setMediaItems(data);
+          applyMediaItems(data);
         }
       } catch (error) {
         console.error('Error fetching media assets:', error);
@@ -196,7 +291,30 @@ export default function MediaGallery() {
     };
 
     fetchMedia();
-  }, [activeFolder, activeSubfolder, ubicaciones]);
+  }, [activeFolder, activeSubfolder, ubicaciones, subfolders]);
+
+  // 5. Sincronizar el estado de navegación activo (carpeta, subcarpeta y foto abierta) con el hash de la URL
+  useEffect(() => {
+    if (loadingFolders) return;
+
+    let nextHash = '';
+    if (activeFolder === 'testimonios') {
+      nextHash = 'testimonios';
+    } else if (activeFolder) {
+      nextHash = activeFolder;
+      if (activeSubfolder) {
+        nextHash += `/${activeSubfolder.path || activeSubfolder.name}`;
+      }
+    }
+
+    if (selectedImageIndex !== null && imagesOnly[selectedImageIndex]) {
+      nextHash += `/photo:${imagesOnly[selectedImageIndex].id}`;
+    }
+
+    if (nextHash && window.location.hash !== `#${nextHash}`) {
+      window.history.replaceState(null, '', `#${nextHash}`);
+    }
+  }, [activeFolder, activeSubfolder, selectedImageIndex, imagesOnly, loadingFolders]);
 
   const FolderButton = ({ folder }: { folder: Folder }) => {
     const isActive = activeFolder === folder.path;
@@ -204,8 +322,8 @@ export default function MediaGallery() {
       <button
         onClick={() => setActiveFolder(folder.path)}
         className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${isActive
-            ? 'bg-emerald-700 text-stone-50 shadow-md shadow-emerald-950/15'
-            : 'bg-stone-100 hover:bg-stone-200/80 text-stone-700 hover:text-stone-900 border border-stone-200/50'
+          ? 'bg-emerald-700 text-stone-50 shadow-md shadow-emerald-950/15'
+          : 'bg-stone-100 hover:bg-stone-200/80 text-stone-700 hover:text-stone-900 border border-stone-200/50'
           }`}
       >
         <span className="flex items-center gap-2">
@@ -238,6 +356,23 @@ export default function MediaGallery() {
           <p className="text-stone-600 mt-3 text-base">
             Descubre los rincones que nos hospedan y las disciplinas que guían nuestro camino.
           </p>
+          <button
+            onClick={handleShareGallery}
+            className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-stone-100 hover:bg-stone-200/85 text-stone-700 hover:text-stone-900 rounded-full text-xs font-semibold border border-stone-200/60 transition-all duration-300 shadow-sm cursor-pointer"
+            title="Compartir enlace de la pestaña activa"
+          >
+            {copied ? (
+              <>
+                <Check className="w-3.5 h-3.5 text-emerald-700" />
+                Enlace copiado!
+              </>
+            ) : (
+              <>
+                <Share2 className="w-3.5 h-3.5" />
+                Compartir esta sección
+              </>
+            )}
+          </button>
         </div>
 
         {/* Double-Level Navigation */}
@@ -301,8 +436,8 @@ export default function MediaGallery() {
                           key={sub.path}
                           onClick={() => setActiveSubfolder(sub)}
                           className={`px-4 py-2 rounded-xl text-xs font-medium transition-all duration-300 ${isSubActive
-                              ? 'bg-stone-800 text-stone-50 shadow-sm'
-                              : 'bg-stone-100 hover:bg-stone-200/80 text-stone-600 hover:text-stone-800 border border-stone-200/30'
+                            ? 'bg-stone-800 text-stone-50 shadow-sm'
+                            : 'bg-stone-100 hover:bg-stone-200/80 text-stone-600 hover:text-stone-800 border border-stone-200/30'
                             }`}
                         >
                           {sub.name}
@@ -323,19 +458,18 @@ export default function MediaGallery() {
               <div key={n} className="break-inside-avoid mb-6 w-full aspect-[4/3] rounded-2xl border border-stone-200/60 overflow-hidden bg-stone-200 animate-pulse" />
             ))}
           </div>
-        ) : mediaItems.length === 0 ? (
+        ) : filteredMediaItems.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-stone-500">No se encontraron archivos en esta carpeta.</p>
           </div>
         ) : (
           <>
             <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6 space-y-6">
-              {mediaItems.slice(0, visibleCount).map((item) => (
+              {filteredMediaItems.slice(0, visibleCount).map((item) => (
                 <div
                   key={item.id}
-                  className={`break-inside-avoid mb-6 w-full rounded-2xl overflow-hidden bg-stone-100 border border-stone-200 shadow-sm hover:shadow-md transition-all duration-300 group inline-block ${
-                    item.type === 'image' ? 'cursor-pointer' : ''
-                  }`}
+                  className={`break-inside-avoid mb-6 w-full rounded-2xl overflow-hidden bg-stone-100 border border-stone-200 shadow-sm hover:shadow-md transition-all duration-300 group inline-block ${item.type === 'image' ? 'cursor-pointer' : ''
+                    }`}
                   onClick={() => {
                     if (item.type === 'image') {
                       const idx = imagesOnly.findIndex((img) => img.id === item.id);
@@ -351,6 +485,13 @@ export default function MediaGallery() {
                         alt={item.alt}
                         loading="lazy"
                         className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500 ease-out rounded-2xl"
+                        onError={() => {
+                          setFailedImages((prev) => {
+                            const next = new Set(prev);
+                            next.add(item.id);
+                            return next;
+                          });
+                        }}
                       />
                     </div>
                   ) : (
@@ -368,7 +509,7 @@ export default function MediaGallery() {
               ))}
             </div>
 
-            {mediaItems.length > visibleCount && (
+            {filteredMediaItems.length > visibleCount && (
               <div className="text-center mt-10">
                 <button
                   onClick={() => setVisibleCount((prev) => prev + 10)}
@@ -399,6 +540,23 @@ export default function MediaGallery() {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                   </svg>
                   Descargar
+                </button>
+                <button
+                  onClick={handleSharePhoto}
+                  className="flex items-center gap-2 px-4 py-2 text-stone-200 hover:text-white bg-stone-900/80 hover:bg-stone-800 rounded-full text-xs font-semibold border border-stone-800 transition-all duration-300 shadow-sm cursor-pointer"
+                  title="Compartir Foto"
+                >
+                  {copiedPhoto ? (
+                    <>
+                      <Check className="w-4 h-4 text-emerald-500" />
+                      Copiado!
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-4 h-4" />
+                      Compartir
+                    </>
+                  )}
                 </button>
                 <button
                   onClick={() => setSelectedImageIndex(null)}
