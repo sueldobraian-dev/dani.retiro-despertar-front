@@ -391,7 +391,7 @@ export default function MediaGallery() {
               </span>
               <div className="flex items-center gap-3">
                 <button
-                  onClick={() => downloadImage(imagesOnly[selectedImageIndex].src, imagesOnly[selectedImageIndex].alt || 'foto-retiro')}
+                  onClick={() => downloadImage(imagesOnly[selectedImageIndex].largeSrc || imagesOnly[selectedImageIndex].src, imagesOnly[selectedImageIndex].alt || 'foto-retiro')}
                   className="flex items-center gap-2 px-4 py-2 text-stone-200 hover:text-white bg-stone-900/80 hover:bg-stone-800 rounded-full text-xs font-semibold border border-stone-800 transition-all duration-300 shadow-sm"
                   title="Descargar Foto"
                 >
@@ -428,7 +428,7 @@ export default function MediaGallery() {
               {/* Image Container */}
               <div className="relative w-full h-[70vh] max-w-4xl flex items-center justify-center p-2">
                 <Image
-                  src={imagesOnly[selectedImageIndex].src}
+                  src={imagesOnly[selectedImageIndex].largeSrc || imagesOnly[selectedImageIndex].src}
                   alt={imagesOnly[selectedImageIndex].alt}
                   fill
                   sizes="(max-width: 1024px) 100vw, 1024px"

@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { UBICACIONES_FOLDERS, TEMATICAS_FOLDERS } from '@/data/galleryMock';
 
-function buildCloudinaryUrl(cloudName: string, resource: any): string {
-  const template = "https://res.cloudinary.com/{cloudName}/image/upload/f_auto,q_auto/v{version}/{public_id}.{format}";
+function buildCloudinaryUrl(cloudName: string, resource: any, transformations = 'f_auto,q_auto'): string {
+  const template = "https://res.cloudinary.com/{cloudName}/image/upload/{transformations}/v{version}/{public_id}.{format}";
   return template
     .replace('{cloudName}', cloudName)
+    .replace('{transformations}', transformations)
     .replace('{version}', String(resource.version))
     .replace('{public_id}', resource.public_id)
     .replace('{format}', resource.format || 'jpg');
@@ -99,7 +100,8 @@ export async function GET(request: Request) {
           const cloudinaryResources = data.resources.map((resource: any) => ({
             id: resource.asset_id || resource.public_id,
             type: 'image',
-            src: buildCloudinaryUrl(cloudName, resource),
+            src: buildCloudinaryUrl(cloudName, resource, 'f_auto,q_auto,w_600,c_limit'),
+            largeSrc: buildCloudinaryUrl(cloudName, resource, 'f_auto,q_auto,w_1600,c_limit'),
             alt: resource.public_id.split('/').pop() || 'Imagen de Cloudinary',
             title: resource.public_id.split('/').pop() || 'Imagen',
             folder: tag,
@@ -144,7 +146,8 @@ export async function GET(request: Request) {
         const cloudinaryResources = data.resources.map((resource: any) => ({
           id: resource.asset_id,
           type: 'image',
-          src: buildCloudinaryUrl(cloudName, resource),
+          src: buildCloudinaryUrl(cloudName, resource, 'f_auto,q_auto,w_600,c_limit'),
+          largeSrc: buildCloudinaryUrl(cloudName, resource, 'f_auto,q_auto,w_1600,c_limit'),
           alt: resource.public_id.split('/').pop() || 'Imagen de Cloudinary',
           title: resource.public_id.split('/').pop() || 'Imagen',
           folder: folder,

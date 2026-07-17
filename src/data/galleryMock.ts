@@ -3,6 +3,7 @@ export interface MediaItem {
   id: string;
   type: 'image' | 'video';
   src: string; // Cloudinary optimized URL or YouTube video ID
+  largeSrc?: string; // High-res image URL for Lightbox zoom
   alt: string;
   title: string;
   folder: string;
