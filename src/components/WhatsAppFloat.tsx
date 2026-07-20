@@ -11,8 +11,17 @@ export default function WhatsAppFloat() {
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
   useEffect(() => {
+    // Cargar estado guardado en localStorage
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('whatsapp-minimized');
+      if (saved === 'true') {
+        setIsMinimized(true);
+      }
+    }
+
     const handleOpen = () => {
       setIsMinimized(false);
+      localStorage.setItem('whatsapp-minimized', 'false');
       setIsShaking(true);
       // Detener el rebote después de 1.5s
       setTimeout(() => {
@@ -24,10 +33,20 @@ export default function WhatsAppFloat() {
     return () => window.removeEventListener('open-whatsapp', handleOpen);
   }, []);
 
+  const handleMinimize = () => {
+    setIsMinimized(true);
+    localStorage.setItem('whatsapp-minimized', 'true');
+  };
+
+  const handleMaximize = () => {
+    setIsMinimized(false);
+    localStorage.setItem('whatsapp-minimized', 'false');
+  };
+
   if (isMinimized) {
     return (
       <button
-        onClick={() => setIsMinimized(false)}
+        onClick={handleMaximize}
         className="fixed bottom-6 right-6 z-50 p-4 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-full shadow-lg shadow-emerald-950/20 hover:scale-110 active:scale-95 transition-all duration-300 group flex items-center justify-center cursor-pointer"
         title="Escríbenos por WhatsApp"
       >
@@ -48,7 +67,7 @@ export default function WhatsAppFloat() {
       {/* Header */}
       <div className="bg-emerald-800 text-stone-50 p-4 relative">
         <button
-          onClick={() => setIsMinimized(true)}
+          onClick={handleMinimize}
           className="absolute top-4 right-4 text-stone-300 hover:text-stone-100 hover:bg-emerald-950/20 p-1 rounded-lg transition-colors cursor-pointer"
           title="Minimizar"
         >
