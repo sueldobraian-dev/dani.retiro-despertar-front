@@ -44,12 +44,14 @@ describe('UpcomingRetreats Component', () => {
         end_date: startStr,
         is_confirmed: true,
         status_text: null,
+        max_capacity: 9,
         locations: {
           id: 'l1',
           name: 'Finca del Sol',
           address: 'Chascomús, BsAs',
           maps_url: 'https://maps.google.com',
           directions: 'Tomar Ruta 2',
+          gallery_url: '/galeria#retiro-despertar/chascomus-finca-los-coipos',
         }
       }
     ];

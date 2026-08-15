@@ -10,6 +10,7 @@ interface Location {
   address: string;
   maps_url: string;
   directions: string | null;
+  gallery_url?: string | null;
 }
 
 interface Retreat {
@@ -20,6 +21,7 @@ interface Retreat {
   location_id: string;
   is_confirmed: boolean;
   status_text: string | null;
+  max_capacity?: number | null;
   locations: Location | null;
 }
 

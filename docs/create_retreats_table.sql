@@ -10,6 +10,7 @@ CREATE TABLE locations (
   address TEXT NOT NULL,
   maps_url TEXT NOT NULL,
   directions TEXT,
+  gallery_url TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -22,6 +23,7 @@ CREATE TABLE retreats (
   location_id UUID REFERENCES locations(id) ON DELETE SET NULL,
   is_confirmed BOOLEAN DEFAULT TRUE,
   status_text TEXT,
+  max_capacity INTEGER DEFAULT 9,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -53,40 +55,44 @@ CREATE POLICY "Permitir lectura pública de retiros" ON retreats
 CREATE POLICY "Permitir inserción pública de pre-inscripciones" ON registrations
   FOR INSERT TO public WITH CHECK (true);
 
--- 7. Insertar registros iniciales de prueba (Ubicaciones primero)
-INSERT INTO locations (id, name, address, maps_url, directions)
+-- 7. Insertar registros iniciales de datos reales (Ubicaciones primero)
+-- MIGRATION
+INSERT INTO locations (name, address, maps_url, directions, gallery_url)
 VALUES
   (
-    '11111111-1111-1111-1111-111111111111',
     'Complejo Minahasa',
     'Tigre, Buenos Aires (Delta)',
-    'https://maps.app.goo.gl/d9Z1w2x3y4z5a6b7c',
-    'Se llega mediante lancha colectiva "Línea Interisleña" desde la Estación Fluvial de Tigre (Muelle 1).'
+    'https://www.google.com/maps/place/Complejo+Minahasa/@-34.3791964,-58.6053874,15.29z/data=!4m6!3m5!1s0x95bca6f57d080321:0x94236f0775954974!8m2!3d-34.3784129!4d-58.600232!16s%2Fg%2F11ggn4mbgh?entry=ttu&g_ep=EgoyMDI2MDcxNC4wIKXMDSoASAFQAw%3D%3D',
+    'Se llega mediante lancha colectiva "Línea Interisleña" desde la Estación Fluvial de Tigre (Muelle 1).',
+    '/galeria#retiro-despertar/tigre-delta-minahasa/retiro-despertar/tigre-delta-minahasa/'
   ),
   (
-    '22222222-2222-2222-2222-222222222222',
     'Finca los Coipos',
     'Chascomús, Buenos Aires',
-    'https://maps.app.goo.gl/k8j7i6h5g4f3e2d1c',
-    'Tomar Autovía 2 hasta el km 120, luego continuar por el camino de circunvalación hacia la laguna.'
+    'https://www.google.com/maps/place/FINCA+LOS+COIPOS/@-35.6872383,-57.9587255,17z/data=!4m6!3m5!1s0x95986b00246fef5d:0x1d00c91f49723b18!8m2!3d-35.6872383!4d-57.9587255!16s%2Fg%2F11z4ymqqx8?entry=ttu&g_ep=EgoyMDI2MDcxNC4wIKXMDSoASAFQAw%3D%3D',
+    'Tomar Autovía 2 hasta el km 134.5, la entrada es a 25mts de la ruta. Ingreso directamente desde ruta 2',
+    '/galeria#retiro-despertar/chascomus-finca-los-coipos/retiro-despertar/chascomus-finca-los-coipos'
   );
 
--- 8. Insertar registros de Retiros referenciando a las ubicaciones creadas
-INSERT INTO retreats (title, start_date, end_date, location_id, is_confirmed, status_text)
+-- 8. Insertar registros de Retiros referenciando a las ubicaciones creadas (max_capacity por defecto en 9)
+-- EXAMPLE
+INSERT INTO retreats (title, start_date, end_date, location_id, is_confirmed, status_text, max_capacity)
 VALUES
   (
     'Retiro Despertar - Conexión Delta',
     '2026-08-01',
     '2026-08-02',
-    '11111111-1111-1111-1111-111111111111',
+    '11111111-1111-1111-1111-111111111111', -- guid de locations
     true,
-    NULL
+    NULL,
+    9
   ),
   (
     'Retiro Despertar - Encuentro de Primavera',
     '2026-10-17',
     '2026-10-18',
-    '22222222-2222-2222-2222-222222222222',
+    '22222222-2222-2222-2222-222222222222', -- guid de locations
     false,
-    'Próximamente confirmamos'
+    'Próximamente confirmamos',
+    9
   );

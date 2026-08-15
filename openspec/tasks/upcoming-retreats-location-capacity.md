@@ -20,7 +20,7 @@ Definir las tareas previas a la implementación para extender la sección `Upcom
   - Inserción de retiros con `max_capacity` seteado en `9` por defecto.
 
 ### 2. Tipado TypeScript & Interfaces
-- [ ] **Actualizar definiciones de tipos en el proyecto**:
+- [x] **Actualizar definiciones de tipos en el proyecto**:
   - Extender la interfaz `Location` agregando `gallery_url?: string`.
   - Extender la interfaz `Retreat` agregando `max_capacity?: number`.
   - Ejecutar verificación de tipos con `npx tsc --noEmit`.
