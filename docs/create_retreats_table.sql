@@ -64,14 +64,14 @@ VALUES
     'Tigre, Buenos Aires (Delta)',
     'https://www.google.com/maps/place/Complejo+Minahasa/@-34.3791964,-58.6053874,15.29z/data=!4m6!3m5!1s0x95bca6f57d080321:0x94236f0775954974!8m2!3d-34.3784129!4d-58.600232!16s%2Fg%2F11ggn4mbgh?entry=ttu&g_ep=EgoyMDI2MDcxNC4wIKXMDSoASAFQAw%3D%3D',
     'Se llega mediante lancha colectiva "Línea Interisleña" desde la Estación Fluvial de Tigre (Muelle 1).',
-    '/galeria#retiro-despertar/tigre-delta-minahasa/retiro-despertar/tigre-delta-minahasa/'
+    '/galeria#retiro-despertar/tigre-delta-minahasa/'
   ),
   (
     'Finca los Coipos',
     'Chascomús, Buenos Aires',
     'https://www.google.com/maps/place/FINCA+LOS+COIPOS/@-35.6872383,-57.9587255,17z/data=!4m6!3m5!1s0x95986b00246fef5d:0x1d00c91f49723b18!8m2!3d-35.6872383!4d-57.9587255!16s%2Fg%2F11z4ymqqx8?entry=ttu&g_ep=EgoyMDI2MDcxNC4wIKXMDSoASAFQAw%3D%3D',
     'Tomar Autovía 2 hasta el km 134.5, la entrada es a 25mts de la ruta. Ingreso directamente desde ruta 2',
-    '/galeria#retiro-despertar/chascomus-finca-los-coipos/retiro-despertar/chascomus-finca-los-coipos'
+    '/galeria#retiro-despertar/chascomus-finca-los-coipos'
   );
 
 -- 8. Insertar registros de Retiros referenciando a las ubicaciones creadas (max_capacity por defecto en 9)

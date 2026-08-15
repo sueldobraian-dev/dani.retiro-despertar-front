@@ -26,11 +26,11 @@ Definir las tareas previas a la implementación para extender la sección `Upcom
   - Ejecutar verificación de tipos con `npx tsc --noEmit`.
 
 ### 3. Componente `UpcomingRetreats` (`src/components/UpcomingRetreats.tsx`)
-- [ ] **Vincular Ubicación con Galería**:
+- [x] **Vincular Ubicación con Galería**:
   - Convertir el texto/badge de ubicación en un enlace interactivo (`<Link href={location.gallery_url || '/galeria'}>`) con estilos hover amigables y accesibles.
-- [ ] **Mostrar Etiqueta de Cupos Limitados**:
+- [x] **Mostrar Etiqueta de Cupos Limitados**:
   - Diseñar e insertar la insignia de capacidad (ej: `"Cupos limitados a 9 personas"` si `max_capacity` es 9).
-- [ ] **Diseño Responsivo & Estética Zen**:
+- [x] **Diseño Responsivo & Estética Zen**:
   - Garantizar coherencia Mobile-First con la paleta del sitio (`emerald-800`, `stone-700`, `rounded-2xl`).
 
 ### 4. Actualización de Documentación & Especificaciones
@@ -38,6 +38,6 @@ Definir las tareas previas a la implementación para extender la sección `Upcom
 - [x] Actualizar [openspec/specs/database-schema/spec.md](file:///d:/Repositories/dani/dani.retiro-despertar-front/openspec/specs/database-schema/spec.md) incluyendo las columnas `gallery_url` y `max_capacity`.
 
 ### 5. Verification & Testing
-- [ ] Actualizar los mocks y tests unitarios en [src/components/__tests__/UpcomingRetreats.test.tsx](file:///d:/Repositories/dani/dani.retiro-despertar-front/src/components/__tests__/UpcomingRetreats.test.tsx) comprobando el enlace a la galería y la etiqueta de cupos.
-- [ ] Correr la suite de pruebas unitarias (`npx vitest run`).
-- [ ] Comprobar el tipado estricto (`npx tsc --noEmit`).
+- [x] Actualizar los mocks y tests unitarios en [src/components/__tests__/UpcomingRetreats.test.tsx](file:///d:/Repositories/dani/dani.retiro-despertar-front/src/components/__tests__/UpcomingRetreats.test.tsx) comprobando el enlace a la galería y la etiqueta de cupos.
+- [x] Correr la suite de pruebas unitarias (`npx vitest run`).
+- [x] Comprobar el tipado estricto (`npx tsc --noEmit`).

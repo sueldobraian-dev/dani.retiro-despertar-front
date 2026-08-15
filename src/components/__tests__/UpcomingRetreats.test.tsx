@@ -64,6 +64,8 @@ describe('UpcomingRetreats Component', () => {
       expect(screen.getByText('Retiro Despertar - Finca del Sol')).toBeInTheDocument();
       expect(screen.getByText('Finca del Sol')).toBeInTheDocument();
       expect(screen.getByText(/Chascomús, BsAs/i)).toBeInTheDocument();
+      expect(screen.getByText(/Cupos limitados a 9 personas/i)).toBeInTheDocument();
+      expect(screen.getByText(/Ver en Galería/i)).toBeInTheDocument();
     });
 
     // Validar el timer

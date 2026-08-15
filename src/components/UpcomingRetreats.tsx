@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Calendar, MapPin, Clock, Info, RefreshCw, AlertCircle } from 'lucide-react';
+import Link from 'next/link';
+import { Calendar, MapPin, Clock, Info, RefreshCw, AlertCircle, Users, Camera } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 interface Location {
@@ -49,30 +50,52 @@ function CountdownTimer({ targetDate }: { targetDate: string }) {
 
     calculateTime();
     const interval = setInterval(calculateTime, 1000);
+
     return () => clearInterval(interval);
   }, [targetDate]);
 
   if (hasEnded) {
     return (
-      <div className="text-emerald-800 font-serif text-xl font-semibold mt-4 bg-emerald-50 py-3 px-6 rounded-2xl inline-block border border-emerald-100">
-        ¡El retiro ha comenzado!
+      <div className="mt-4 p-3 bg-emerald-50 text-emerald-800 rounded-2xl text-xs font-semibold">
+        ¡La experiencia ya comenzó!
       </div>
     );
   }
 
-  const TimeBlock = ({ value, label }: { value: number; label: string }) => (
-    <div className="flex flex-col items-center bg-white border border-stone-200/60 rounded-2xl p-4 min-w-[70px] sm:min-w-[90px] shadow-sm">
-      <span className="text-3xl sm:text-4xl font-serif text-emerald-800 font-bold">{String(value).padStart(2, '0')}</span>
-      <span className="text-[10px] sm:text-xs text-stone-500 uppercase tracking-wider font-semibold mt-1">{label}</span>
-    </div>
-  );
-
   return (
-    <div className="flex gap-3 sm:gap-4 mt-6 justify-center md:justify-start">
-      <TimeBlock value={timeLeft.days} label="Días" />
-      <TimeBlock value={timeLeft.hours} label="Horas" />
-      <TimeBlock value={timeLeft.minutes} label="Minutos" />
-      <TimeBlock value={timeLeft.seconds} label="Segundos" />
+    <div className="grid grid-cols-4 gap-2 sm:gap-4 text-center mt-4">
+      <div className="bg-stone-100/80 border border-stone-200/40 p-2 sm:p-3 rounded-2xl">
+        <span className="block text-lg sm:text-2xl font-serif font-bold text-stone-800">
+          {timeLeft.days}
+        </span>
+        <span className="text-[10px] sm:text-xs text-stone-500 uppercase tracking-wider">
+          Días
+        </span>
+      </div>
+      <div className="bg-stone-100/80 border border-stone-200/40 p-2 sm:p-3 rounded-2xl">
+        <span className="block text-lg sm:text-2xl font-serif font-bold text-stone-800">
+          {timeLeft.hours}
+        </span>
+        <span className="text-[10px] sm:text-xs text-stone-500 uppercase tracking-wider">
+          Horas
+        </span>
+      </div>
+      <div className="bg-stone-100/80 border border-stone-200/40 p-2 sm:p-3 rounded-2xl">
+        <span className="block text-lg sm:text-2xl font-serif font-bold text-stone-800">
+          {timeLeft.minutes}
+        </span>
+        <span className="text-[10px] sm:text-xs text-stone-500 uppercase tracking-wider">
+          Min
+        </span>
+      </div>
+      <div className="bg-stone-100/80 border border-stone-200/40 p-2 sm:p-3 rounded-2xl">
+        <span className="block text-lg sm:text-2xl font-serif font-bold text-stone-800">
+          {timeLeft.seconds}
+        </span>
+        <span className="text-[10px] sm:text-xs text-stone-500 uppercase tracking-wider">
+          Seg
+        </span>
+      </div>
     </div>
   );
 }
@@ -85,21 +108,25 @@ export default function UpcomingRetreats() {
   const fetchRetreats = useCallback(async () => {
     setLoading(true);
     setError(false);
+
     try {
-      const today = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
-      const { data, error: dbError } = await supabase
+      // Formato YYYY-MM-DD local
+      const today = new Date().toISOString().split('T')[0];
+
+      const { data, error: supabaseError } = await supabase
         .from('retreats')
         .select('*, locations(*)')
         .gte('end_date', today)
         .order('start_date', { ascending: true });
 
-      if (dbError) {
-        throw dbError;
+      if (supabaseError) {
+        console.error('Error fetching retreats from Supabase:', supabaseError);
+        setError(true);
+      } else if (data) {
+        setRetreats(data as Retreat[]);
       }
-
-      setRetreats((data as Retreat[]) || []);
     } catch (err) {
-      console.error('Error fetching retreats from Supabase:', err);
+      console.error('Unexpected error fetching retreats:', err);
       setError(true);
     } finally {
       setLoading(false);
@@ -110,7 +137,6 @@ export default function UpcomingRetreats() {
     fetchRetreats();
   }, [fetchRetreats]);
 
-  // Helper para formatear fechas a texto legible en español
   const formatRetreatDate = (start: string, end: string) => {
     const startDate = new Date(`${start}T00:00:00`);
     const endDate = new Date(`${end}T00:00:00`);
@@ -223,9 +249,17 @@ export default function UpcomingRetreats() {
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-50 rounded-full blur-3xl opacity-60 pointer-events-none" />
 
                 <div className="relative z-10">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-100">
-                    <Clock className="w-3.5 h-3.5" /> Próxima Fecha
-                  </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-100">
+                      <Clock className="w-3.5 h-3.5" /> Próxima Fecha
+                    </span>
+                    {/* Cantidad de personas proveniente de la tabla retreats (max_capacity) */}
+                    {nextRetreat.max_capacity !== undefined && nextRetreat.max_capacity !== null && (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-200/60">
+                        <Users className="w-3.5 h-3.5 text-amber-800" /> Cupos limitados a {nextRetreat.max_capacity} personas
+                      </span>
+                    )}
+                  </div>
 
                   <h3 className="text-2xl sm:text-3xl font-serif text-stone-800 mt-4 font-bold">
                     {nextRetreat.title}
@@ -251,16 +285,26 @@ export default function UpcomingRetreats() {
                               ({nextRetreat.locations.address})
                             </span>
                           )}
-                          {nextRetreat.locations?.maps_url && (
-                            <a
-                              href={nextRetreat.locations.maps_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-emerald-700 hover:text-emerald-900 underline font-semibold transition"
-                            >
-                              (Ver en Google Maps)
-                            </a>
-                          )}
+                          <div className="flex items-center gap-2">
+                            {nextRetreat.locations?.maps_url && (
+                              <a
+                                href={nextRetreat.locations.maps_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-emerald-700 hover:text-emerald-900 underline font-semibold transition"
+                              >
+                                (Ver en Google Maps)
+                              </a>
+                            )}
+                            {nextRetreat.locations?.gallery_url && (
+                              <Link
+                                href={nextRetreat.locations.gallery_url}
+                                className="text-xs text-emerald-700 hover:text-emerald-900 underline font-semibold transition flex items-center gap-1"
+                              >
+                                <Camera className="w-3.5 h-3.5" /> Ver Galería
+                              </Link>
+                            )}
+                          </div>
                         </div>
                         {nextRetreat.locations?.directions && (
                           <p className="text-xs text-stone-500 bg-stone-50 border border-stone-200/50 p-3 rounded-2xl mt-1.5 leading-relaxed max-w-lg">
@@ -331,14 +375,25 @@ export default function UpcomingRetreats() {
                                     Ver mapa
                                   </a>
                                 )}
-                                {retreat.locations?.directions && (
-                                  <span className="text-[10px] text-stone-400" title={retreat.locations.directions}>
-                                    • indicaciones disponibles
-                                  </span>
+                                {retreat.locations?.gallery_url && (
+                                  <Link
+                                    href={retreat.locations.gallery_url}
+                                    className="text-[10px] text-emerald-700 hover:text-emerald-900 underline font-semibold transition flex items-center gap-0.5"
+                                  >
+                                    <Camera className="w-3 h-3" /> Ver Galería
+                                  </Link>
                                 )}
                               </div>
                             </div>
                           </div>
+
+                          {/* Cantidad de personas proveniente de la tabla retreats (max_capacity) */}
+                          {retreat.max_capacity !== undefined && retreat.max_capacity !== null && (
+                            <div className="flex items-center gap-1.5 text-[11px] text-amber-900 font-medium bg-amber-50/70 px-2.5 py-0.5 rounded-lg w-fit border border-amber-200/50 mt-1">
+                              <Users className="w-3 h-3 text-amber-800" />
+                              <span>Cupos limitados a {retreat.max_capacity} personas</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     ))
