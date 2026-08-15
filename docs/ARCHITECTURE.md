@@ -110,3 +110,20 @@ sequenceDiagram
     
     Frontend-->>User: Muestra Banner "Reactivando base de datos, reintente en unos segundos"
 ```
+
+---
+
+## 6. Arquitectura de SEO y Cumplimiento con Google Ads & Meta Ads
+
+La plataforma incorpora una arquitectura orientada a la optimización en motores de búsqueda (SEO) y cumplimiento regulatorio publicitario:
+
+1. **Gestión Centralizada de Metadatos**:
+   - `src/app/layout.tsx` configura los metadatos globales (`Metadata` y `Viewport` API de Next.js), incluyendo `metadataBase`, URL canónica, tarjetas de OpenGraph y Twitter.
+2. **Datos Estructurados (JSON-LD)**:
+   - Inyección en el HTML de objetos JSON-LD basados en el estándar **Schema.org** (`Organization`, `Event`, `LocalBusiness`), proporcionando a rastreadores de motores de búsqueda información estructurada sobre fechas de retiros y datos de contacto.
+3. **Páginas y Términos Legales**:
+   - `/privacidad`: Página con la Política de Privacidad requerida por Meta Ads y Google Ads para protección de datos personales.
+   - `/terminos`: Términos y condiciones del servicio con cláusula de descargo de responsabilidad de salud holística (*Health Policy Disclaimer*).
+4. **Accesibilidad y Semántica**:
+   - Jerarquía HTML5 semántica (`<header>`, `<main>`, `<footer>`) con un único `<h1>` por página y atributos `alt` descriptivos en imágenes.
+

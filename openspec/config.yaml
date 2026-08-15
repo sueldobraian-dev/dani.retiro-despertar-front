@@ -4,8 +4,8 @@ context: |
   Proyecto: Retiro Despertar Frontend
   Dominio: Landing page y plataforma holística para retiros espirituales (Constelaciones Familiares, Reiki, Yoga y Gastronomía de Chef Privado).
   Documentación de Referencia:
-  - docs/ARCHITECTURE.md (Patrón arquitectónico Jamstack/Next.js 15, flujo de datos, diagrama Mermaid y seguridad).
-  - docs/INSTRUCTIONS.md (Guía integral de negocio, DDL de Supabase, Cloudinary y auto-restore).
+  - docs/ARCHITECTURE.md (Patrón arquitectónico Jamstack/Next.js 15, flujo de datos, diagrama Mermaid, seguridad y arquitectura SEO/Ads).
+  - docs/INSTRUCTIONS.md (Guía integral de negocio, DDL de Supabase, Cloudinary, auto-restore y políticas de Google/Meta Ads).
   - docs/create_retreats_table.sql (Script SQL DDL para tablas locations, retreats y registrations con RLS).
 
   Stack Tecnológico:
@@ -14,6 +14,11 @@ context: |
   - Backend Serverless & Base de Datos: Supabase (PostgreSQL con políticas Row Level Security - RLS).
   - Multimedia: Cloudinary (API Routes proxies / listado dinámico por tags y carpetas de ubicaciones).
   - Testing: Vitest + React Testing Library (cobertura lógica completa).
+
+  Políticas de Google Ads, Meta Ads & SEO Excelente:
+  - Cumplimiento de Políticas de Salud y Anuncios: Descargo explícito de responsabilidad indicando que las actividades son de bienestar holístico y desarrollo personal (sin ofrecer diagnósticos médicos ni promesas de sanación clínica).
+  - Enlaces Legales Permanentes: Acceso visible desde el footer a /privacidad (Política de Privacidad) y /terminos (Términos y Condiciones).
+  - SEO Técnico: Metadatos OpenGraph, Twitter Cards, URLs canónicas, JSON-LD Schema.org (Organization/Event) y jerarquía semántica HTML5 con un solo <h1> por página.
 
   Estructura de Datos (Supabase):
   - locations (id, name, address, maps_url, directions, created_at).
@@ -33,13 +38,14 @@ context: |
 
 rules:
   proposal:
-    - Consultar siempre los documentos en docs/ (ARCHITECTURE.md e INSTRUCTIONS.md) para verificar restricciones de dominio y esquema.
+    - Consultar siempre los documentos en docs/ (ARCHITECTURE.md e INSTRUCTIONS.md) para verificar restricciones de dominio, SEO y políticas publicitarias.
+    - Asegurar que todo cambio mantenga la conformidad con Google Ads y Meta Ads (páginas de privacidad, términos y descargo de responsabilidad de salud).
     - Describir claramente el objetivo, impacto en el usuario y alineación visual zen del sitio.
     - Especificar cambios necesarios en frontend, esquemas Supabase (docs/create_retreats_table.sql), proxies Cloudinary o tests.
   spec:
     - Mantener sincronía estricta con las especificaciones técnicas descritas en docs/.
+    - Garantizar que los requerimientos cumplan las reglas de SEO excelente (metadatos, Schema.org, accesibilidad alt, HTML5 semántico).
     - Incluir requerimientos funcionales detallados, diagramas o estructuras de datos y criterios de aceptación verificables.
-    - Definir comportamientos específicos para mobile y desktop.
   tasks:
     - Dividir las tareas en bloques manejables e independientes.
     - Incluir siempre el paso de verificación con tests unitarios (npx vitest run) y comprobación de tipos (npx tsc --noEmit).

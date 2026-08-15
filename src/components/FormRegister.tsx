@@ -215,6 +215,13 @@ export default function FormRegister() {
                   'Confirmar Pre-Inscripción'
                 )}
               </button>
+              <p className="text-center text-xs text-stone-500 pt-1">
+                Tus datos están protegidos. Consulta nuestra{' '}
+                <a href="/privacidad" className="underline text-emerald-800 hover:text-emerald-900 font-medium">
+                  Política de Privacidad
+                </a>
+                .
+              </p>
             </form>
           )}
         </div>

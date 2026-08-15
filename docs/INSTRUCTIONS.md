@@ -197,3 +197,33 @@ El diseño visual debe seguir una estética premium, pacífica y zen:
 * **Tipografía**: Títulos con fuente Serif elegante (`Playfair Display`) y textos de lectura Sans-Serif limpia (`Inter`).
 * **Paleta**: Colores orgánicos con fondos piedra/arena (`stone-50`), textos carbón (`stone-800`), acentos esmeralda y verde bosque (`emerald-800`, `emerald-900`) y notas sutiles de madera/tierra.
 * **Enfoque Mobile-First**: Todo componente visual debe ser totalmente adaptable a pantallas pequeñas y soportar gestos táctiles.
+
+---
+
+## 6. Cumplimiento de Políticas de Google Ads, Meta Ads y Estándares de SEO
+
+Para asegurar un excelente posicionamiento orgánico (SEO) y permitir la aprobación sin restricciones de campañas publicitarias en **Google Ads** y **Meta Ads (Facebook/Instagram)**, toda la aplicación debe cumplir estrictamente con los siguientes lineamientos:
+
+### A. Políticas de Publicidad (Google Ads & Meta Ads)
+1. **Páginas Legales Obligatorias**:
+   - Enlace visible permanente en el footer hacia la **Política de Privacidad** (`/privacidad`) y **Términos y Condiciones** (`/terminos`).
+   - Declaración clara sobre la recopilación y protección de datos personales en los formularios.
+2. **Transparencia e Identidad de Negocio**:
+   - Identificación pública y clara de los administradores y canales de contacto directo (WhatsApp, Redes Sociales).
+3. **Descargo de Responsabilidad de Salud (Health Policy Disclosure)**:
+   - Marco descriptivo claro: Las actividades del retiro (Yoga, Reiki, Constelaciones Familiares) se presentan como experiencias de bienestar holístico, desarrollo personal y reconexión, sin ofrecer diagnósticos médicos ni promesas de curación o sustitución de tratamientos médicos profesionales.
+
+### B. Estándares de SEO Técnico y Estructura
+1. **Metadatos y OpenGraph**:
+   - Definición de `title`, `description`, `keywords`, `openGraph`, `twitter` y `metadataBase` en la raíz (`layout.tsx`).
+   - Etiquetas dinámicas para páginas secundarias y galerías.
+2. **Datos Estructurados (JSON-LD)**:
+   - Inyección de esquemas Schema.org (`Organization`, `Event`, `LocalBusiness`) para enriquecer los snippets en motores de búsqueda.
+3. **Jerarquía Semántica HTML5**:
+   - Un único encabezado principal `<h1>` por página.
+   - Uso correcto de etiquetas semánticas (`<header>`, `<main>`, `<section>`, `<footer>`).
+   - Atributos `alt` descriptivos en todas las imágenes.
+4. **Rendimiento y Core Web Vitals**:
+   - Carga diferida (Lazy Loading) de recursos secundarios y prioridad (`priority`) para imágenes críticas.
+   - Enfoque Mobile-First para garantizar puntajes elevados en Lighthouse (Performance, Accessibility, SEO).
+

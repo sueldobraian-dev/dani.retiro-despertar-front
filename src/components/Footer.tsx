@@ -2,8 +2,7 @@ import { Instagram, Facebook } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Footer() {
-  // Can be hardcoded to "Julio 2026" matching current local date
-  const lastUpdate = 'Julio 2026';
+  const lastUpdate = 'Agosto 2026';
 
   return (
     <footer className="bg-stone-900 text-stone-400 py-12 border-t border-stone-800">
@@ -42,7 +41,24 @@ export default function Footer() {
           </div>
 
           {/* Metadata & Credits */}
-          <div className="flex flex-col items-center md:items-end gap-2 text-sm text-stone-400">
+          <div className="flex flex-col items-center md:items-end gap-3 text-sm text-stone-400">
+            {/* Legal Links (Google & Meta Ads compliance) */}
+            <div className="flex items-center gap-4 text-xs font-medium text-stone-400">
+              <Link
+                href="/privacidad"
+                className="hover:text-emerald-400 transition-colors underline underline-offset-4 decoration-stone-700"
+              >
+                Política de Privacidad
+              </Link>
+              <span className="text-stone-700">•</span>
+              <Link
+                href="/terminos"
+                className="hover:text-emerald-400 transition-colors underline underline-offset-4 decoration-stone-700"
+              >
+                Términos y Condiciones
+              </Link>
+            </div>
+
             <div>
               <span className="text-stone-500">Última actualización:</span>{' '}
               <span className="text-stone-300 font-medium">{lastUpdate}</span>

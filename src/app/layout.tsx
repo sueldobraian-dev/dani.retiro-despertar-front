@@ -26,16 +26,20 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://retirodespertar.com';
+
 export const metadata: Metadata = {
-  title: 'Retiro Despertar | Constelaciones Familiares, Reiki y Yoga',
+  metadataBase: new URL(siteUrl),
+  title: 'Retiro Despertar | Constelaciones Familiares, Reiki, Yoga y Chef Privado',
   description:
-    'Un espacio sagrado para el bienestar y la sanación holística. Únete al Retiro Despertar y reconecta con tu cuerpo, mente y sistema familiar a través del Yoga, Reiki y Constelaciones.',
+    'Un espacio sagrado de bienestar e introspección holística. Reconecta con tu cuerpo, mente y sistema familiar a través del Yoga, Reiki y Constelaciones en un entorno natural único.',
   keywords: [
     'Retiro Despertar',
     'Retiro Espiritual',
     'Constelaciones Familiares',
     'Reiki',
     'Yoga',
+    'Chef Privado',
     'Sanación Holística',
     'Meditación',
     'Bienestar',
@@ -43,17 +47,21 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Retiro Despertar' }],
   robots: 'index, follow',
+  alternates: {
+    canonical: siteUrl,
+  },
   openGraph: {
-    title: 'Retiro Despertar | Constelaciones Familiares, Reiki y Yoga',
+    title: 'Retiro Despertar | Constelaciones Familiares, Reiki, Yoga y Chef Privado',
     description:
-      'Un encuentro único de sanación integral, bienestar e introspección profunda. Reserva tu lugar en el Retiro Despertar.',
+      'Un encuentro único de bienestar integral e introspección profunda. Reserva tu lugar en el Retiro Despertar.',
     type: 'website',
+    url: siteUrl,
     locale: 'es_AR',
     siteName: 'Retiro Despertar',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Retiro Despertar | Constelaciones Familiares, Reiki y Yoga',
+    title: 'Retiro Despertar | Constelaciones Familiares, Reiki, Yoga y Chef Privado',
     description:
       'Un espacio sagrado de sanación holística y reconexión profunda.',
   },
@@ -68,8 +76,28 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Retiro Despertar',
+    url: siteUrl,
+    logo: `${siteUrl}/icon.svg`,
+    description:
+      'Retiro holístico de introspección y bienestar combinando Constelaciones Familiares, Reiki, Yoga y Gastronomía de Chef Privado.',
+    sameAs: [
+      'https://www.instagram.com/despertar.retiroholistico',
+      'https://www.facebook.com/share/1BVTYJAse8/',
+    ],
+  };
+
   return (
     <html lang="es" className={`${inter.variable} ${playfair.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body className="bg-stone-50 text-stone-800 font-sans antialiased min-h-screen selection:bg-emerald-800 selection:text-stone-50">
         <Header />
         {children}

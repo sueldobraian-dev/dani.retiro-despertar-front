@@ -13,5 +13,9 @@ describe('Footer Component', () => {
     // Links de redes sociales y créditos
     expect(screen.getByText('Braian Sueldo')).toBeInTheDocument();
     expect(screen.getByText('Daniela Garcia Cabrera')).toBeInTheDocument();
+
+    // Links legales de Google Ads y Meta Ads compliance
+    expect(screen.getByRole('link', { name: /Política de Privacidad/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Términos y Condiciones/i })).toBeInTheDocument();
   });
 });
