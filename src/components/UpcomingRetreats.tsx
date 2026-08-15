@@ -144,9 +144,6 @@ export default function UpcomingRetreats() {
           <h2 className="text-3xl md:text-4xl font-serif text-stone-800 mt-2">
             Próximos Retiros
           </h2>
-          <p className="text-stone-600 mt-3 text-base">
-            Reserva las fechas en tu calendario y da el primer paso hacia esta experiencia de introspección y bienestar.
-          </p>
         </div>
 
         {/* Estado de Carga (Skeleton) */}

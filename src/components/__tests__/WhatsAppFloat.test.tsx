@@ -5,20 +5,22 @@ import { act } from 'react';
 import WhatsAppFloat from '../WhatsAppFloat';
 
 describe('WhatsAppFloat Component', () => {
-  it('toggles minimize state and responds to open-whatsapp window events', () => {
+  it('starts minimized by default and responds to click and open-whatsapp events', () => {
     render(<WhatsAppFloat />);
 
-    // Por defecto se renderiza maximizado
+    // Por defecto se renderiza minimizado (botón flotante circular)
+    const floatingBtn = screen.getByTitle('Escríbenos por WhatsApp');
+    expect(floatingBtn).toBeInTheDocument();
+    expect(screen.queryByText('¡Hola! ¿Tienes dudas sobre el próximo Retiro Despertar? Escríbenos y te acompañamos.')).not.toBeInTheDocument();
+
+    // Abrir al hacer click en el botón flotante
+    fireEvent.click(floatingBtn);
     expect(screen.getByText('¡Hola! ¿Tienes dudas sobre el próximo Retiro Despertar? Escríbenos y te acompañamos.')).toBeInTheDocument();
 
     // Minimizar
     const minimizeBtn = screen.getByTitle('Minimizar');
     fireEvent.click(minimizeBtn);
-
-    // Debe mostrar el botón flotante circular
     expect(screen.queryByText('¡Hola! ¿Tienes dudas sobre el próximo Retiro Despertar? Escríbenos y te acompañamos.')).not.toBeInTheDocument();
-    const floatingBtn = screen.getByTitle('Escríbenos por WhatsApp');
-    expect(floatingBtn).toBeInTheDocument();
 
     // Disparar evento global para abrir
     act(() => {

@@ -28,15 +28,22 @@ export default function HeroOverview() {
             Retiro Despertar
           </h1>
           <p className="text-lg text-stone-600 leading-relaxed max-w-xl">
-            Regálate un fin de semana de paz y conexión profunda. Combinamos el poder de las <strong>Constelaciones Familiares</strong>, la armonía del <strong>Reiki</strong> y el bienestar físico-mental del <strong>Yoga</strong> en un entorno natural único diseñado para tu renovación integral.
+            Regálate un fin de semana de paz y conexión profunda. Combinamos el poder de las <strong>Constelaciones Familiares</strong>, la armonía del <strong>Reiki</strong> y el bienestar del <strong>Yoga</strong> en un entorno natural único, acompañado por la propuesta gastronómica de nuestro <strong>chef privado</strong> para tu renovación integral.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
-            <button
-              onClick={() => window.dispatchEvent(new CustomEvent('open-whatsapp'))}
+            <a
+              href="#proximos-retiros"
+              onClick={(e) => {
+                if (typeof window !== 'undefined') {
+                  e.preventDefault();
+                  const element = document.getElementById('proximos-retiros');
+                  if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }}
               className="px-8 py-4 bg-emerald-700 hover:bg-emerald-800 text-stone-50 rounded-full font-medium transition duration-300 ease-in-out text-center shadow-md shadow-emerald-900/10 hover:shadow-emerald-900/20 cursor-pointer"
             >
-              Reservar mi Lugar
-            </button>
+              Próximo Retiro
+            </a>
             <a
               href="#experiencia"
               onClick={(e) => {
@@ -46,9 +53,9 @@ export default function HeroOverview() {
                   if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
               }}
-              className="px-8 py-4 border border-stone-200 hover:border-stone-400 text-stone-700 hover:text-stone-900 rounded-full font-medium transition duration-300 ease-in-out text-center bg-white/50"
+              className="px-8 py-4 border border-stone-200 hover:border-stone-400 text-stone-700 hover:text-stone-900 rounded-full font-medium transition duration-300 ease-in-out text-center bg-white/50 cursor-pointer"
             >
-              Ver la Experiencia
+              Conocer la experiencia
             </a>
           </div>
         </div>

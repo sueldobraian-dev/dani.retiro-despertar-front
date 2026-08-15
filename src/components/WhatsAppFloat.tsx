@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { X, MessageSquare, ArrowRight } from 'lucide-react';
 
 export default function WhatsAppFloat() {
-  const [isMinimized, setIsMinimized] = useState<boolean>(false);
+  const [isMinimized, setIsMinimized] = useState<boolean>(true);
   const [isShaking, setIsShaking] = useState<boolean>(false);
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5492212007660';
   const message = 'Hola me interesa formar parte de la experiencia. Me contás como puedo avanzar?';
@@ -14,7 +14,9 @@ export default function WhatsAppFloat() {
     // Cargar estado guardado en localStorage
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('whatsapp-minimized');
-      if (saved === 'true') {
+      if (saved === 'false') {
+        setIsMinimized(false);
+      } else {
         setIsMinimized(true);
       }
     }

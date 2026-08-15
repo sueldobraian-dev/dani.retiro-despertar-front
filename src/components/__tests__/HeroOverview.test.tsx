@@ -16,10 +16,7 @@ describe('HeroOverview Component', () => {
     vi.restoreAllMocks();
   });
 
-  it('dispatches open-whatsapp event on CTA click and scrolls on Experience click', () => {
-    const dispatchMock = vi.fn();
-    vi.stubGlobal('dispatchEvent', dispatchMock);
-
+  it('scrolls to Proximos Retiros and Experiencia sections on button clicks', () => {
     const scrollMock = vi.fn();
     vi.spyOn(document, 'getElementById').mockReturnValue({
       scrollIntoView: scrollMock,
@@ -27,20 +24,20 @@ describe('HeroOverview Component', () => {
 
     render(<HeroOverview />);
 
-    // Verificar título principal y subtítulo
+    // Verificar título principal, subtítulo y chef privado
     expect(screen.getByText('Retiro Despertar')).toBeInTheDocument();
     expect(screen.getByText('Un Encuentro de Almas y Sanación')).toBeInTheDocument();
+    expect(screen.getByText('chef privado')).toBeInTheDocument();
 
-    // Click en el CTA para inscribirse ("Reservar mi Lugar")
-    const ctaButton = screen.getByRole('button', { name: /Reservar mi Lugar/i });
-    fireEvent.click(ctaButton);
+    // Click en "Próximos Retiros"
+    const retreatsLink = screen.getByRole('link', { name: /Próximos Retiros/i });
+    fireEvent.click(retreatsLink);
 
-    expect(dispatchMock).toHaveBeenCalledWith(
-      expect.objectContaining({ type: 'open-whatsapp' })
-    );
+    expect(document.getElementById).toHaveBeenCalledWith('proximos-retiros');
+    expect(scrollMock).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
 
-    // Click en "Ver la Experiencia"
-    const experienceLink = screen.getByRole('link', { name: /Ver la Experiencia/i });
+    // Click en "Conocer la experiencia"
+    const experienceLink = screen.getByRole('link', { name: /Conocer la experiencia/i });
     fireEvent.click(experienceLink);
 
     expect(document.getElementById).toHaveBeenCalledWith('experiencia');
