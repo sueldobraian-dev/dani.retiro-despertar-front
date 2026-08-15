@@ -29,8 +29,8 @@ describe('HeroOverview Component', () => {
     expect(screen.getByText('Un Encuentro de Almas y Sanación')).toBeInTheDocument();
     expect(screen.getByText('chef privado')).toBeInTheDocument();
 
-    // Click en "Próximos Retiros"
-    const retreatsLink = screen.getByRole('link', { name: /Próximos Retiros/i });
+    // Click en "Próximo Retiro"
+    const retreatsLink = screen.getByRole('link', { name: /Próximo Retiro/i });
     fireEvent.click(retreatsLink);
 
     expect(document.getElementById).toHaveBeenCalledWith('proximos-retiros');
