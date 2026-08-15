@@ -57,6 +57,10 @@ export const metadata: Metadata = {
     description:
       'Un espacio sagrado de sanación holística y reconexión profunda.',
   },
+  icons: {
+    icon: '/icon.svg',
+    apple: '/icon.svg',
+  },
 };
 
 export default function RootLayout({

@@ -3,7 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Menu, X, Sparkles, Instagram, Facebook } from 'lucide-react';
+import { Menu, X, Instagram, Facebook } from 'lucide-react';
+import DespertarIcon from './DespertarIcon';
 
 const NAV_ITEMS = [
   { id: 'inicio', label: 'Inicio', path: '/' },
@@ -78,7 +79,7 @@ export default function Header() {
       },
       {
         condition: item.id === 'galeria',
-        run: () => {}
+        run: () => { }
       },
       {
         condition: pathname === '/',
@@ -102,11 +103,10 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled
+      className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled
           ? 'bg-stone-50/90 backdrop-blur-md shadow-sm shadow-stone-200/40 border-b border-stone-100/80 py-4'
           : 'bg-stone-50/50 backdrop-blur-sm border-b border-transparent py-5'
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo */}
@@ -123,7 +123,7 @@ export default function Header() {
           className="flex items-center gap-2 group cursor-pointer"
         >
           <div className="w-8 h-8 rounded-full bg-emerald-700/10 flex items-center justify-center text-emerald-800 group-hover:bg-emerald-700 group-hover:text-stone-50 transition-colors duration-300">
-            <Sparkles className="w-4 h-4" />
+            <DespertarIcon className="w-5 h-5 transition-transform duration-300 group-hover:scale-105" />
           </div>
           <span className="font-serif font-bold text-stone-800 text-lg sm:text-xl tracking-tight">
             Retiro Despertar
@@ -137,11 +137,10 @@ export default function Header() {
               key={item.id}
               href={item.path}
               onClick={(e) => handleNavClick(e, item)}
-              className={`text-sm font-medium tracking-wide transition-colors duration-300 relative py-1 ${
-                activeSection === item.id
+              className={`text-sm font-medium tracking-wide transition-colors duration-300 relative py-1 ${activeSection === item.id
                   ? 'text-emerald-800 font-semibold'
                   : 'text-stone-600 hover:text-stone-900'
-              }`}
+                }`}
             >
               {item.label}
               {activeSection === item.id && (
@@ -190,9 +189,8 @@ export default function Header() {
 
       {/* Menú Móvil desplegable */}
       <div
-        className={`md:hidden fixed inset-x-0 top-[73px] bg-stone-50 border-b border-stone-100 shadow-lg transition-all duration-300 ease-in-out ${
-          isMobileMenuOpen ? 'opacity-100 max-h-screen py-6' : 'opacity-0 max-h-0 overflow-hidden py-0'
-        }`}
+        className={`md:hidden fixed inset-x-0 top-[73px] bg-stone-50 border-b border-stone-100 shadow-lg transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'opacity-100 max-h-screen py-6' : 'opacity-0 max-h-0 overflow-hidden py-0'
+          }`}
       >
         <nav className="flex flex-col px-6 space-y-4">
           {NAV_ITEMS.map((item) => (
@@ -200,11 +198,10 @@ export default function Header() {
               key={item.id}
               href={item.path}
               onClick={(e) => handleNavClick(e, item)}
-              className={`text-base font-medium py-2 px-3 rounded-xl transition duration-300 ${
-                activeSection === item.id
+              className={`text-base font-medium py-2 px-3 rounded-xl transition duration-300 ${activeSection === item.id
                   ? 'bg-emerald-50 text-emerald-800 font-semibold'
                   : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
-              }`}
+                }`}
             >
               {item.label}
             </Link>
