@@ -1,0 +1,45 @@
+schema: spec-driven
+
+context: |
+  Proyecto: Retiro Despertar Frontend
+  Dominio: Landing page y plataforma holística para retiros espirituales (Constelaciones Familiares, Reiki, Yoga y Gastronomía de Chef Privado).
+  Documentación de Referencia:
+  - docs/ARCHITECTURE.md (Patrón arquitectónico Jamstack/Next.js 15, flujo de datos, diagrama Mermaid y seguridad).
+  - docs/INSTRUCTIONS.md (Guía integral de negocio, DDL de Supabase, Cloudinary y auto-restore).
+  - docs/create_retreats_table.sql (Script SQL DDL para tablas locations, retreats y registrations con RLS).
+
+  Stack Tecnológico:
+  - Framework: Next.js 15 (App Router) optimizado en modo standalone para contenedores Docker.
+  - UI & Estilos: React 19, TypeScript estricto, Tailwind CSS (enfoque Mobile-First).
+  - Backend Serverless & Base de Datos: Supabase (PostgreSQL con políticas Row Level Security - RLS).
+  - Multimedia: Cloudinary (API Routes proxies / listado dinámico por tags y carpetas de ubicaciones).
+  - Testing: Vitest + React Testing Library (cobertura lógica completa).
+
+  Estructura de Datos (Supabase):
+  - locations (id, name, address, maps_url, directions, created_at).
+  - retreats (id, title, start_date, end_date, location_id FK, is_confirmed, status_text, created_at).
+  - registrations (id, full_name, email, phone, interest_discipline, message, created_at).
+
+  Arquitectura y Directrices de Desarrollo:
+  - Estética Orgánica Zen: Fondos cálidos (stone-50, amber-50/40), acentos verdes (emerald-800, emerald-700), textos carbón (stone-800), bordes suavizados (rounded-2xl/3xl) y sombras sutiles.
+  - Mobile-First Absoluto: Clases base de Tailwind CSS aplicadas directamente al móvil. Breakpoints (md:, lg:) para escritorio. Contenedor principal limitado a max-w-7xl mx-auto px-4 sm:px-6 lg:px-8.
+  - Patrón de Estrategia: Uso de mapas de dispatch / declarativos en lugar de condicionales anidados (if-else/switch).
+  - Resiliencia (Auto-Restore): Si la DB de Supabase se pausa por inactividad (>2 días tier gratuito), FormRegister invoca POST /api/supabase/restore usando SUPABASE_MANAGEMENT_PAT para despertar el proyecto.
+  - Seguridad y Entornos:
+    * Variables NEXT_PUBLIC_ (SUPABASE_URL, ANON_KEY, WHATSAPP_NUMBER) expuestas al cliente.
+    * Secretos de Servidor (CLOUDINARY_CLIENT_SECRET, SUPABASE_MANAGEMENT_PAT) aislados en Next.js API Routes (/src/app/api/...).
+    * Políticas RLS: INSERT público en registrations (lectura SELECT bloqueada para privacidad), SELECT público en retreats y locations.
+  - Testing: Cobertura estricta con Vitest; ningún cambio lógico debe subirse sin sus tests unitarios correspondientes.
+
+rules:
+  proposal:
+    - Consultar siempre los documentos en docs/ (ARCHITECTURE.md e INSTRUCTIONS.md) para verificar restricciones de dominio y esquema.
+    - Describir claramente el objetivo, impacto en el usuario y alineación visual zen del sitio.
+    - Especificar cambios necesarios en frontend, esquemas Supabase (docs/create_retreats_table.sql), proxies Cloudinary o tests.
+  spec:
+    - Mantener sincronía estricta con las especificaciones técnicas descritas en docs/.
+    - Incluir requerimientos funcionales detallados, diagramas o estructuras de datos y criterios de aceptación verificables.
+    - Definir comportamientos específicos para mobile y desktop.
+  tasks:
+    - Dividir las tareas en bloques manejables e independientes.
+    - Incluir siempre el paso de verificación con tests unitarios (npx vitest run) y comprobación de tipos (npx tsc --noEmit).
