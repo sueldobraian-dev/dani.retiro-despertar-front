@@ -14,6 +14,7 @@ Almacenar las ubicaciones físicas de los retiros para evitar duplicaciones de d
 - `address`: `TEXT` (NOT NULL) - Dirección o zona geográfica visible.
 - `maps_url`: `TEXT` (NOT NULL) - Enlace absoluto a Google Maps.
 - `directions`: `TEXT` (Opcional) - Indicaciones de transporte o llegada paso a paso.
+- `gallery_url`: `TEXT` (Opcional) - Enlace o fragmento hacia la galería fotográfica del lugar.
 - `created_at`: `TIMESTAMPTZ` (Default `NOW()`).
 
 #### Acceptance Criteria
@@ -33,6 +34,7 @@ Mantener la agenda de retiros espirituales pasados y futuros asociados a una ubi
 - `location_id`: `UUID` (Foreign Key -> `locations.id` ON DELETE SET NULL).
 - `is_confirmed`: `BOOLEAN` (Default `TRUE`) - Indica si la fecha está confirmada o en borrador.
 - `status_text`: `TEXT` (Opcional) - Leyenda personalizada cuando `is_confirmed` es `false`.
+- `max_capacity`: `INTEGER` (Default `9`) - Límite de cupos de participantes.
 - `created_at`: `TIMESTAMPTZ` (Default `NOW()`).
 
 #### Acceptance Criteria
