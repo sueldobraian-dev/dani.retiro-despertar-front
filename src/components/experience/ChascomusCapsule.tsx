@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import {
   Sparkles,
@@ -25,6 +26,11 @@ import QuienesSomosCapsule from '@/components/experience/QuienesSomosCapsule';
 export default function ChascomusCapsule() {
   const [activeDay, setActiveDay] = useState<1 | 2>(1);
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Cerrar modal con tecla Escape y bloquear scroll de fondo
   useEffect(() => {
@@ -396,10 +402,10 @@ export default function ChascomusCapsule() {
         </Link>
       </div>
 
-      {/* Modal Reutilizable con QuienesSomosCapsule */}
-      {isTeamModalOpen && (
+      {/* Modal Reutilizable con QuienesSomosCapsule montado via createPortal */}
+      {isTeamModalOpen && mounted && createPortal(
         <div
-          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center pt-[max(env(safe-area-inset-top),3.5rem)] pb-[max(env(safe-area-inset-bottom),2rem)] px-3 sm:px-6 bg-stone-950/80 backdrop-blur-md animate-in fade-in duration-200"
+          className="fixed inset-0 z-[99999] flex flex-col items-center justify-end sm:justify-center bg-stone-950/85 backdrop-blur-md animate-in fade-in duration-200"
           role="dialog"
           aria-modal="true"
           aria-label="Información del equipo y facilitadoras"
@@ -407,32 +413,46 @@ export default function ChascomusCapsule() {
             if (e.target === e.currentTarget) setIsTeamModalOpen(false);
           }}
         >
-          <div className="relative w-full max-w-5xl max-h-[82vh] sm:max-h-[88vh] bg-stone-50 rounded-3xl shadow-2xl border border-stone-200/80 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
-            {/* Header del Modal */}
-            <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 border-b border-stone-200/80 bg-white sticky top-0 z-20 shrink-0">
-              <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-full bg-emerald-100 text-emerald-800 shrink-0">
+          <div
+            className="relative w-full h-[92vh] sm:h-auto sm:max-h-[85vh] sm:max-w-4xl bg-stone-50 rounded-t-[32px] sm:rounded-3xl shadow-2xl border-t sm:border border-stone-200/80 flex flex-col overflow-hidden animate-in slide-in-from-bottom-8 duration-300"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header del Modal visible siempre en la parte superior */}
+            <div className="bg-white border-b border-stone-200 px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-between z-30 shrink-0 shadow-sm">
+              <div className="flex items-center gap-2.5 min-w-0 pr-2">
+                <span className="p-2 rounded-full bg-emerald-100 text-emerald-800 shrink-0">
                   <Users className="w-4 h-4" />
                 </span>
-                <h3 className="font-serif font-bold text-stone-800 text-sm sm:text-base line-clamp-1">
+                <h3 className="font-serif font-bold text-stone-800 text-base sm:text-lg truncate">
                   Quiénes Somos • Equipo Despertar
                 </h3>
               </div>
               <button
                 onClick={() => setIsTeamModalOpen(false)}
-                className="w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center text-stone-500 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 rounded-full transition cursor-pointer shrink-0 border border-stone-200/80"
+                className="px-3.5 py-2 bg-stone-100 hover:bg-stone-200 active:bg-stone-300 text-stone-800 rounded-full text-xs font-bold flex items-center gap-1.5 border border-stone-300 transition cursor-pointer shadow-sm shrink-0"
                 aria-label="Cerrar modal"
               >
-                <X className="w-5 h-5" />
+                <span>Cerrar</span>
+                <X className="w-4 h-4 text-stone-900" />
               </button>
             </div>
 
-            {/* Contenido del Modal reutilizando QuienesSomosCapsule */}
-            <div className="overflow-y-auto p-4 sm:p-8">
+            {/* Contenido del Modal con scroll independiente */}
+            <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-8 space-y-6">
               <QuienesSomosCapsule />
+              {/* Botón inferior para cerrar cómodamente */}
+              <div className="pt-6 pb-8 border-t border-stone-200 text-center">
+                <button
+                  onClick={() => setIsTeamModalOpen(false)}
+                  className="px-6 py-3 bg-stone-800 hover:bg-stone-900 text-white rounded-full text-xs sm:text-sm font-semibold transition cursor-pointer shadow-md"
+                >
+                  Cerrar y Volver a la Experiencia
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
