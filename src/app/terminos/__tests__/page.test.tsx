@@ -1,13 +1,21 @@
 import React from 'react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import TerminosPage from '../page';
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    back: vi.fn(),
+    push: vi.fn(),
+  }),
+}));
 
 describe('TerminosPage Component', () => {
   it('renders terms and conditions heading, health disclaimer, payment policies and media release', () => {
     render(<TerminosPage />);
 
     expect(screen.getByRole('heading', { level: 1, name: /Términos y Condiciones/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Volver/i })).toBeInTheDocument();
     expect(screen.getByText(/Descripción de la Experiencia/i)).toBeInTheDocument();
     expect(screen.getByText(/Descargo de Responsabilidad sobre Salud y Bienestar/i)).toBeInTheDocument();
     expect(screen.getByText(/no constituyen ni reemplazan/i)).toBeInTheDocument();

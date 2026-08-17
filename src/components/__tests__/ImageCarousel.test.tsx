@@ -33,10 +33,10 @@ describe('ImageCarousel Component', () => {
     expect(comidaCard).toHaveAttribute('href', '/galeria#gastronomia');
 
     const fogonCard = screen.getByText('Círculo de fuego y sanación grupal').closest('a');
-    expect(fogonCard).toHaveAttribute('href', '/galeria#retiro-despertar/chascomus-finca-los-coipos');
+    expect(fogonCard).toHaveAttribute('href', '/galeria#retiro-despertar/tigre-delta-minahasa');
 
     const deltaCard = screen.getByText('Entorno natural único y de desconexión').closest('a');
-    expect(deltaCard).toHaveAttribute('href', '/galeria#retiro-despertar/tigre-delta-minahasa');
+    expect(deltaCard).toHaveAttribute('href', '/galeria#retiro-despertar/chascomus-finca-los-coipos');
 
     // Debe tener el enlace a /experiencia
     const experienceBtn = screen.getByRole('link', { name: /Ver más sobre la experiencia/i });

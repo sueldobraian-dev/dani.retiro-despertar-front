@@ -1,6 +1,6 @@
 import React from 'react';
-import Link from 'next/link';
 import type { Metadata } from 'next';
+import BackButton from '@/components/BackButton';
 
 export const metadata: Metadata = {
   title: 'Términos y Condiciones | Retiro Despertar',
@@ -12,12 +12,7 @@ export default function TerminosPage() {
     <main className="min-h-screen bg-stone-50 py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto bg-white p-8 sm:p-12 rounded-3xl shadow-sm border border-stone-200/80 space-y-8">
         <div>
-          <Link
-            href="/"
-            className="text-xs uppercase tracking-wider text-emerald-800 hover:text-emerald-900 font-semibold mb-4 inline-block transition-colors"
-          >
-            ← Volver al inicio
-          </Link>
+          <BackButton label="Volver" fallbackUrl="/" />
           <h1 className="text-3xl sm:text-4xl font-serif font-bold text-stone-800">
             Términos y Condiciones
           </h1>

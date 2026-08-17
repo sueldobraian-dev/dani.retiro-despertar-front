@@ -1,6 +1,6 @@
 import React from 'react';
-import Link from 'next/link';
 import type { Metadata } from 'next';
+import BackButton from '@/components/BackButton';
 
 export const metadata: Metadata = {
   title: 'Política de Privacidad | Retiro Despertar',
@@ -12,12 +12,7 @@ export default function PrivacidadPage() {
     <main className="min-h-screen bg-stone-50 py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto bg-white p-8 sm:p-12 rounded-3xl shadow-sm border border-stone-200/80 space-y-8">
         <div>
-          <Link
-            href="/"
-            className="text-xs uppercase tracking-wider text-emerald-800 hover:text-emerald-900 font-semibold mb-4 inline-block transition-colors"
-          >
-            ← Volver al inicio
-          </Link>
+          <BackButton label="Volver" fallbackUrl="/" />
           <h1 className="text-3xl sm:text-4xl font-serif font-bold text-stone-800">
             Política de Privacidad
           </h1>
@@ -51,33 +46,25 @@ export default function PrivacidadPage() {
 
         <section className="space-y-4 text-stone-700 leading-relaxed text-sm sm:text-base">
           <h2 className="text-xl font-serif font-semibold text-stone-800 border-b border-stone-200 pb-2">
-            3. Uso de la Información
+            3. Finalidad del Uso de los Datos
           </h2>
           <p>
-            La información recopilada se utiliza exclusivamente para:
+            Toda información recopilada se utiliza exclusivamente para:
           </p>
           <ul className="list-disc pl-6 space-y-2">
-            <li>Responder a tus consultas de pre-inscripción y coordinar tu reserva.</li>
-            <li>Brindar detalles sobre la propuesta gastronómica del chef privado, accesos y horarios del retiro.</li>
-            <li>Cumplir con los requerimientos técnicos y de seguridad exigidos por las plataformas publicitarias de Meta Ads y Google Ads.</li>
+            <li>Confirmar y gestionar la reserva de plazas en los retiros.</li>
+            <li>Enviar detalles logísticos, cronogramas e indicaciones de llegada antes del evento.</li>
+            <li>Coordinar menús personalizados con nuestro chef privado según las necesidades de los participantes.</li>
+            <li>Responder dudas e inquietudes de forma personalizada a través de canales directos de comunicación.</li>
           </ul>
         </section>
 
         <section className="space-y-4 text-stone-700 leading-relaxed text-sm sm:text-base">
           <h2 className="text-xl font-serif font-semibold text-stone-800 border-b border-stone-200 pb-2">
-            4. Protección de Datos y Servicios de Terceros
+            4. No Divulgación a Terceros
           </h2>
           <p>
-            No vendemos, alquilamos ni cedemos tus datos personales a terceros. Nuestra infraestructura utiliza servicios en la nube de alta seguridad (Supabase y Cloudinary) que aplican cifrado y políticas de Row Level Security (RLS) para evitar accesos no autorizados.
-          </p>
-        </section>
-
-        <section className="space-y-4 text-stone-700 leading-relaxed text-sm sm:text-base">
-          <h2 className="text-xl font-serif font-semibold text-stone-800 border-b border-stone-200 pb-2">
-            5. Derechos del Usuario y Contacto
-          </h2>
-          <p>
-            Tienes derecho a solicitar la actualización, rectificación o eliminación de tus datos personales en cualquier momento. Si deseas realizar una consulta referente a tu privacidad, puedes comunicarte directamente con nuestro equipo por medio del canal oficial de WhatsApp o redes sociales.
+            <strong>Retiro Despertar</strong> no vende, alquila ni cede bajo ninguna circunstancia los datos personales de sus usuarios a terceros con fines comerciales ni publicitarios.
           </p>
         </section>
       </div>
