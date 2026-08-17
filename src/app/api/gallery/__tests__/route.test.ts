@@ -81,6 +81,41 @@ describe('Gallery API Route', () => {
     expect(json[0].folder).toBe('gastronomia');
   });
 
+  it('should sort resources by experience-order when tag and orderBy=experience-order is provided', async () => {
+    const mockCloudinaryResources = {
+      resources: [
+        {
+          asset_id: 'asset2',
+          public_id: 'gallery/finca/photo2',
+          version: 1,
+          format: 'jpg',
+          context: { custom: { 'experience-order': '2' } },
+        },
+        {
+          asset_id: 'asset1',
+          public_id: 'gallery/finca/photo1',
+          version: 1,
+          format: 'jpg',
+          context: { custom: { 'experience-order': '1' } },
+        }
+      ]
+    };
+
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockCloudinaryResources,
+    } as Response);
+
+    const req = new Request('http://localhost:3000/api/gallery?tag=finca-los-coipos&orderBy=experience-order');
+    const response = await GET(req);
+    expect(response.status).toBe(200);
+
+    const json = await response.json();
+    expect(json).toHaveLength(2);
+    expect(json[0].id).toBe('asset1');
+    expect(json[1].id).toBe('asset2');
+  });
+
   it('should return subfolders from handleParentFolder strategy when parentFolder is provided', async () => {
     const mockSubfolders = {
       folders: [

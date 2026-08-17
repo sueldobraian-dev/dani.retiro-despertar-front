@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { getGalleryUrl } from '@/lib/locationUrls';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
+import ExperienceLocationCarousel from '@/components/experience/ExperienceLocationCarousel';
 
 export default function ChascomusCapsule() {
   const [activeDay, setActiveDay] = useState<1 | 2>(1);
@@ -153,9 +154,16 @@ export default function ChascomusCapsule() {
         </div>
       </div>
 
+      {/* Carrusel de Fotos de Finca Los Coipos (Cloudinary tag: finca-los-coipos con experience-order) */}
+      <ExperienceLocationCarousel
+        tag="finca-los-coipos"
+        title="Postales de Finca Los Coipos"
+        subtitle="Un vistazo a los rincones, laguna y naturaleza de nuestra sede en Chascomús"
+      />
+
       {/* Cronograma / Programa del Retiro */}
       <div className="bg-white rounded-3xl p-6 sm:p-10 border border-stone-200/60 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 border-b border-stone-100 pb-6">
+        <div className="space-y-4 mb-6 border-b border-stone-100 pb-5">
           <div>
             <span className="text-xs font-semibold text-emerald-800 uppercase tracking-wider">
               Paso a paso
@@ -167,9 +175,9 @@ export default function ChascomusCapsule() {
           <div className="flex gap-2">
             <button
               onClick={() => setActiveDay(1)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition ${
+              className={`px-4 py-2 rounded-xl text-xs font-semibold transition cursor-pointer ${
                 activeDay === 1
-                  ? 'bg-emerald-800 text-stone-50'
+                  ? 'bg-emerald-800 text-stone-50 shadow-sm'
                   : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
               }`}
             >
@@ -177,9 +185,9 @@ export default function ChascomusCapsule() {
             </button>
             <button
               onClick={() => setActiveDay(2)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition ${
+              className={`px-4 py-2 rounded-xl text-xs font-semibold transition cursor-pointer ${
                 activeDay === 2
-                  ? 'bg-emerald-800 text-stone-50'
+                  ? 'bg-emerald-800 text-stone-50 shadow-sm'
                   : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
               }`}
             >
@@ -189,69 +197,69 @@ export default function ChascomusCapsule() {
         </div>
 
         {activeDay === 1 ? (
-          <div className="space-y-4">
-            <div className="flex items-center gap-4 p-3 bg-stone-50 rounded-2xl border border-stone-100">
-              <span className="font-serif font-bold text-emerald-800 text-sm w-16">09:30</span>
-              <span className="text-stone-700 text-xs sm:text-sm">Llegada y reparto de habitaciones</span>
+          <div className="divide-y divide-stone-100">
+            <div className="flex items-center gap-4 py-2.5 text-xs sm:text-sm">
+              <span className="font-serif font-bold text-emerald-800 w-14 shrink-0">09:30</span>
+              <span className="text-stone-700">Llegada y reparto de habitaciones</span>
             </div>
-            <div className="flex items-center gap-4 p-3 bg-stone-50 rounded-2xl border border-stone-100">
-              <span className="font-serif font-bold text-emerald-800 text-sm w-16">10:00</span>
-              <span className="text-stone-700 text-xs sm:text-sm">Presentación y toma de conciencia</span>
+            <div className="flex items-center gap-4 py-2.5 text-xs sm:text-sm">
+              <span className="font-serif font-bold text-emerald-800 w-14 shrink-0">10:00</span>
+              <span className="text-stone-700">Presentación y toma de conciencia</span>
             </div>
-            <div className="flex items-center gap-4 p-3 bg-stone-50 rounded-2xl border border-stone-100">
-              <span className="font-serif font-bold text-emerald-800 text-sm w-16">10:30</span>
-              <span className="text-stone-700 text-xs sm:text-sm">Infusiones y bienvenida</span>
+            <div className="flex items-center gap-4 py-2.5 text-xs sm:text-sm">
+              <span className="font-serif font-bold text-emerald-800 w-14 shrink-0">10:30</span>
+              <span className="text-stone-700">Infusiones y bienvenida</span>
             </div>
-            <div className="flex items-center gap-4 p-3 bg-emerald-50/60 rounded-2xl border border-emerald-100">
-              <span className="font-serif font-bold text-emerald-800 text-sm w-16">11:00</span>
-              <span className="text-stone-800 font-medium text-xs sm:text-sm">Constelaciones Familiares con Caballos (Bloque 1)</span>
+            <div className="flex items-center gap-4 py-2.5 text-xs sm:text-sm bg-emerald-50/50 -mx-3 px-3 rounded-lg">
+              <span className="font-serif font-bold text-emerald-800 w-14 shrink-0">11:00</span>
+              <span className="text-stone-800 font-medium">Constelaciones Familiares con Caballos (Bloque 1)</span>
             </div>
-            <div className="flex items-center gap-4 p-3 bg-stone-50 rounded-2xl border border-stone-100">
-              <span className="font-serif font-bold text-emerald-800 text-sm w-16">13:30</span>
-              <span className="text-stone-700 text-xs sm:text-sm">Comida preparada por chef privado</span>
+            <div className="flex items-center gap-4 py-2.5 text-xs sm:text-sm">
+              <span className="font-serif font-bold text-emerald-800 w-14 shrink-0">13:30</span>
+              <span className="text-stone-700">Comida preparada por chef privado</span>
             </div>
-            <div className="flex items-center gap-4 p-3 bg-emerald-50/60 rounded-2xl border border-emerald-100">
-              <span className="font-serif font-bold text-emerald-800 text-sm w-16">14:30</span>
-              <span className="text-stone-800 font-medium text-xs sm:text-sm">Constelaciones Familiares con Caballos (Bloque 2)</span>
+            <div className="flex items-center gap-4 py-2.5 text-xs sm:text-sm bg-emerald-50/50 -mx-3 px-3 rounded-lg">
+              <span className="font-serif font-bold text-emerald-800 w-14 shrink-0">14:30</span>
+              <span className="text-stone-800 font-medium">Constelaciones Familiares con Caballos (Bloque 2)</span>
             </div>
-            <div className="flex items-center gap-4 p-3 bg-stone-50 rounded-2xl border border-stone-100">
-              <span className="font-serif font-bold text-emerald-800 text-sm w-16">18:30</span>
-              <span className="text-stone-700 text-xs sm:text-sm">Snack / Refrigerio en la naturaleza</span>
+            <div className="flex items-center gap-4 py-2.5 text-xs sm:text-sm">
+              <span className="font-serif font-bold text-emerald-800 w-14 shrink-0">18:30</span>
+              <span className="text-stone-700">Snack / Refrigerio en la naturaleza</span>
             </div>
-            <div className="flex items-center gap-4 p-3 bg-stone-50 rounded-2xl border border-stone-100">
-              <span className="font-serif font-bold text-emerald-800 text-sm w-16">21:00</span>
-              <span className="text-stone-700 text-xs sm:text-sm">Cena / Fogón de integración</span>
+            <div className="flex items-center gap-4 py-2.5 text-xs sm:text-sm">
+              <span className="font-serif font-bold text-emerald-800 w-14 shrink-0">21:00</span>
+              <span className="text-stone-700">Cena / Fogón de integración</span>
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="flex items-center gap-4 p-3 bg-emerald-50/60 rounded-2xl border border-emerald-100">
-              <span className="font-serif font-bold text-emerald-800 text-sm w-16">08:00</span>
-              <span className="text-stone-800 font-medium text-xs sm:text-sm">Hatha Yoga matutino</span>
+          <div className="divide-y divide-stone-100">
+            <div className="flex items-center gap-4 py-2.5 text-xs sm:text-sm bg-emerald-50/50 -mx-3 px-3 rounded-lg">
+              <span className="font-serif font-bold text-emerald-800 w-14 shrink-0">08:00</span>
+              <span className="text-stone-800 font-medium">Hatha Yoga matutino</span>
             </div>
-            <div className="flex items-center gap-4 p-3 bg-stone-50 rounded-2xl border border-stone-100">
-              <span className="font-serif font-bold text-emerald-800 text-sm w-16">10:00</span>
-              <span className="text-stone-700 text-xs sm:text-sm">Desayuno / Comida nutritiva</span>
+            <div className="flex items-center gap-4 py-2.5 text-xs sm:text-sm">
+              <span className="font-serif font-bold text-emerald-800 w-14 shrink-0">10:00</span>
+              <span className="text-stone-700">Desayuno / Comida nutritiva</span>
             </div>
-            <div className="flex items-center gap-4 p-3 bg-emerald-50/60 rounded-2xl border border-emerald-100">
-              <span className="font-serif font-bold text-emerald-800 text-sm w-16">11:30</span>
-              <span className="text-stone-800 font-medium text-xs sm:text-sm">Sesión de Reiki Grupal</span>
+            <div className="flex items-center gap-4 py-2.5 text-xs sm:text-sm bg-emerald-50/50 -mx-3 px-3 rounded-lg">
+              <span className="font-serif font-bold text-emerald-800 w-14 shrink-0">11:30</span>
+              <span className="text-stone-800 font-medium">Sesión de Reiki Grupal</span>
             </div>
-            <div className="flex items-center gap-4 p-3 bg-stone-50 rounded-2xl border border-stone-100">
-              <span className="font-serif font-bold text-emerald-800 text-sm w-16">13:00</span>
-              <span className="text-stone-700 text-xs sm:text-sm">Almuerzo especial del chef</span>
+            <div className="flex items-center gap-4 py-2.5 text-xs sm:text-sm">
+              <span className="font-serif font-bold text-emerald-800 w-14 shrink-0">13:00</span>
+              <span className="text-stone-700">Almuerzo especial del chef</span>
             </div>
-            <div className="flex items-center gap-4 p-3 bg-stone-50 rounded-2xl border border-stone-100">
-              <span className="font-serif font-bold text-emerald-800 text-sm w-16">14:30</span>
-              <span className="text-stone-700 text-xs sm:text-sm">Tiempo libre y descanso junto a la laguna</span>
+            <div className="flex items-center gap-4 py-2.5 text-xs sm:text-sm">
+              <span className="font-serif font-bold text-emerald-800 w-14 shrink-0">14:30</span>
+              <span className="text-stone-700">Tiempo libre y descanso junto a la laguna</span>
             </div>
-            <div className="flex items-center gap-4 p-3 bg-stone-50 rounded-2xl border border-stone-100">
-              <span className="font-serif font-bold text-emerald-800 text-sm w-16">16:30</span>
-              <span className="text-stone-700 text-xs sm:text-sm">Snack / Infusiones</span>
+            <div className="flex items-center gap-4 py-2.5 text-xs sm:text-sm">
+              <span className="font-serif font-bold text-emerald-800 w-14 shrink-0">16:30</span>
+              <span className="text-stone-700">Snack / Infusiones</span>
             </div>
-            <div className="flex items-center gap-4 p-3 bg-amber-50/60 rounded-2xl border border-amber-100">
-              <span className="font-serif font-bold text-amber-900 text-sm w-16">17:00</span>
-              <span className="text-stone-800 font-semibold text-xs sm:text-sm">Círculo de Cierre y Despedida</span>
+            <div className="flex items-center gap-4 py-2.5 text-xs sm:text-sm bg-amber-50/60 -mx-3 px-3 rounded-lg">
+              <span className="font-serif font-bold text-amber-900 w-14 shrink-0">17:00</span>
+              <span className="text-stone-800 font-semibold">Círculo de Cierre y Despedida</span>
             </div>
           </div>
         )}

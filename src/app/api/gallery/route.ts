@@ -24,10 +24,29 @@ function getCloudinaryAuthHeader(creds: CloudinaryCredentials): { Authorization:
   return { Authorization: `Basic ${auth}` };
 }
 
-function getAssetOrder(resource: any): number {
+function getAssetOrder(resource: any, priorityKey?: string): number {
+  if (priorityKey) {
+    const directVal = resource.context?.custom?.[priorityKey] ?? resource.context?.[priorityKey];
+    if (directVal !== undefined && directVal !== null) {
+      const parsed = parseInt(String(directVal), 10);
+      if (!Number.isNaN(parsed)) return parsed;
+    }
+  }
+
+  const experienceOrder =
+    resource.context?.custom?.['experience-order'] ??
+    resource.context?.['experience-order'] ??
+    resource.context?.custom?.experience_order ??
+    resource.context?.experience_order;
+
+  if (experienceOrder !== undefined && experienceOrder !== null) {
+    const parsed = parseInt(String(experienceOrder), 10);
+    if (!Number.isNaN(parsed)) return parsed;
+  }
+
   const contextOrder = resource.context?.custom?.order ?? resource.context?.order;
   if (contextOrder) {
-    const parsed = parseInt(contextOrder, 10);
+    const parsed = parseInt(String(contextOrder), 10);
     if (!Number.isNaN(parsed)) return parsed;
   }
 
@@ -81,7 +100,7 @@ async function handleParentFolder(parentFolder: string, creds: CloudinaryCredent
 }
 
 // 3. Handler para obtener recursos por tag
-async function handleTag(tag: string, cloudName: string) {
+async function handleTag(tag: string, cloudName: string, orderBy?: string | null) {
   const url = `https://res.cloudinary.com/${cloudName}/image/list/${encodeURIComponent(tag)}.json`;
   const res = await fetch(url, {
     next: { revalidate: 60 }
@@ -103,15 +122,20 @@ async function handleTag(tag: string, cloudName: string) {
     alt: resource.public_id.split('/').pop() || 'Imagen',
     title: resource.public_id.split('/').pop() || 'Imagen',
     folder: tag,
-    order: getAssetOrder(resource),
+    order: getAssetOrder(resource, orderBy || undefined),
+    experienceOrder: getAssetOrder(resource, 'experience-order'),
   }));
 
-  resources.sort((a: any, b: any) => a.order - b.order);
+  if (orderBy === 'experience-order') {
+    resources.sort((a: any, b: any) => a.experienceOrder - b.experienceOrder);
+  } else {
+    resources.sort((a: any, b: any) => a.order - b.order);
+  }
   return NextResponse.json(resources);
 }
 
 // 4. Handler para obtener recursos por prefijo de carpeta (compatibilidad)
-async function handleFolder(folder: string, creds: CloudinaryCredentials) {
+async function handleFolder(folder: string, creds: CloudinaryCredentials, orderBy?: string | null) {
   const url = `https://api.cloudinary.com/v1_1/${creds.cloudName}/resources/image?prefix=${encodeURIComponent(folder)}&type=upload&max_results=50&context=true`;
 
   const res = await fetch(url, {
@@ -135,10 +159,15 @@ async function handleFolder(folder: string, creds: CloudinaryCredentials) {
     alt: resource.public_id.split('/').pop() || 'Imagen',
     title: resource.public_id.split('/').pop() || 'Imagen',
     folder: folder,
-    order: getAssetOrder(resource),
+    order: getAssetOrder(resource, orderBy || undefined),
+    experienceOrder: getAssetOrder(resource, 'experience-order'),
   }));
 
-  resources.sort((a: any, b: any) => a.order - b.order);
+  if (orderBy === 'experience-order') {
+    resources.sort((a: any, b: any) => a.experienceOrder - b.experienceOrder);
+  } else {
+    resources.sort((a: any, b: any) => a.order - b.order);
+  }
   return NextResponse.json(resources);
 }
 
@@ -156,13 +185,14 @@ export async function GET(request: Request) {
   const parentFolder = searchParams.get('parentFolder');
   const tag = searchParams.get('tag');
   const folder = searchParams.get('folder');
+  const orderBy = searchParams.get('orderBy');
 
   try {
     const strategies = [
       { condition: getFolders === 'true', run: () => handleGetFolders() },
       { condition: !!parentFolder, run: () => handleParentFolder(parentFolder!, creds) },
-      { condition: !!tag, run: () => handleTag(tag!, creds.cloudName) },
-      { condition: !!folder, run: () => handleFolder(folder!, creds) },
+      { condition: !!tag, run: () => handleTag(tag!, creds.cloudName, orderBy) },
+      { condition: !!folder, run: () => handleFolder(folder!, creds, orderBy) },
     ];
 
     const matched = strategies.find(s => s.condition);

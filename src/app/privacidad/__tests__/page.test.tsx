@@ -15,8 +15,9 @@ describe('PrivacidadPage Component', () => {
     render(<PrivacidadPage />);
 
     expect(screen.getByRole('heading', { level: 1, name: /Política de Privacidad/i })).toBeInTheDocument();
-    expect(screen.getByText(/Responsable del Tratamiento de Datos/i)).toBeInTheDocument();
+    expect(screen.getByText(/Compromiso de Privacidad/i)).toBeInTheDocument();
     expect(screen.getByText(/Información que Recopilamos/i)).toBeInTheDocument();
+    expect(screen.getByText(/Finalidad del Uso de los Datos/i)).toBeInTheDocument();
     expect(screen.getByText(/No Divulgación a Terceros/i)).toBeInTheDocument();
   });
 });
