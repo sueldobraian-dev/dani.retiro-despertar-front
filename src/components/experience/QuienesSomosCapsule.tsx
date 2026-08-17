@@ -50,7 +50,7 @@ export default function QuienesSomosCapsule() {
             <div>
               <div className="w-full aspect-[3/4] relative rounded-2xl overflow-hidden mb-6 bg-stone-100 shadow-sm">
                 <Image
-                  src="/images/team/facilitators-vero-nancy.jpg"
+                  src="/images/team/facilitators-vero-nancy.jpeg"
                   alt="Facilitadoras: Vero y Nancy"
                   fill
                   className="object-cover"
@@ -83,7 +83,7 @@ export default function QuienesSomosCapsule() {
             <div>
               <div className="w-full aspect-[3/4] relative rounded-2xl overflow-hidden mb-6 bg-stone-100 shadow-sm">
                 <Image
-                  src="/images/team/organizer-dani.jpg"
+                  src="/images/team/organizer-dani.jpeg"
                   alt="Organizadora: Dani"
                   fill
                   className="object-cover"
