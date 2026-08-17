@@ -8,7 +8,7 @@ Definir las tareas y especificaciones para la creación de la nueva página `/ex
    - Selector de pestañas adhesivo (`sticky top-[73px]`) para mantener visibles las cápsulas durante el scroll.
    - Componentización bajo `src/components/experience/`:
      - **`ExperienceNavTabs.tsx`**: Pestañas de navegación adhesivas superiores (*sticky*).
-     - **`QuienesSomosCapsule.tsx`**: Cápsula principal con las 2 fotos exclusivas (`facilitators_vero_nancy.jpg` y `organizer_dani.jpg`).
+     - **`QuienesSomosCapsule.tsx`**: Cápsula principal con las 2 fotos exclusivas (`facilitators-vero-nancy.jpg` y `organizer-dani.jpg`).
      - **`ChascomusCapsule.tsx`**: Cápsula de Finca Los Coipos (actividades, programa Día 1 y 2, cupones parametrizados para WhatsApp y galería).
      - **`DeltaCapsule.tsx`**: Cápsula de Complejo Minahasa (edición Delta y aviso de nueva fecha).
      - **`src/types/experience.ts`**: Definición de interfaces para escalabilidad futura de nuevas ubicaciones de retiros.
