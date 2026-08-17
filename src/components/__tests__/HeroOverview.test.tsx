@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import HeroOverview from '../HeroOverview';
 
 // Mock next/image
@@ -53,6 +53,11 @@ describe('HeroOverview Component', () => {
   });
 
   it('renders title, subtitle, chef text and experience links', async () => {
+    const scrollMock = vi.fn();
+    vi.spyOn(document, 'getElementById').mockReturnValue({
+      scrollIntoView: scrollMock,
+    } as any);
+
     render(<HeroOverview />);
 
     expect(screen.getByText('Retiro Despertar')).toBeInTheDocument();
@@ -63,6 +68,10 @@ describe('HeroOverview Component', () => {
     expect(retreatsLink).toHaveAttribute('href', '/experiencia#retiro-despertar/chascomus-finca-los-coipos');
 
     const experienceLink = screen.getByRole('link', { name: /Conocer la experiencia/i });
-    expect(experienceLink).toHaveAttribute('href', '/experiencia');
+    expect(experienceLink).toHaveAttribute('href', '#experiencia');
+
+    fireEvent.click(experienceLink);
+    expect(document.getElementById).toHaveBeenCalledWith('experiencia');
+    expect(scrollMock).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
   });
 });

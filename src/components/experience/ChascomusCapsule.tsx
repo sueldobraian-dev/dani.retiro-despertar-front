@@ -7,20 +7,19 @@ import {
   Utensils,
   Sun,
   CheckCircle2,
-  ChevronDown,
-  ChevronUp,
   Camera,
   Heart,
   Tag,
   Ticket,
-  MessageSquare
+  MessageSquare,
+  FileText,
+  ChevronRight
 } from 'lucide-react';
 import { getGalleryUrl } from '@/lib/locationUrls';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 
 export default function ChascomusCapsule() {
   const [activeDay, setActiveDay] = useState<1 | 2>(1);
-  const [openTerms, setOpenTerms] = useState(false);
 
   const preventaWhatsAppUrl = getWhatsAppUrl(
     'Hola! Quisiera solicitar mi cupón de preventa (-10% OFF) para el Retiro Despertar en Finca Los Coipos. Código: PREVENTA10'
@@ -336,26 +335,18 @@ export default function ChascomusCapsule() {
         </div>
       </div>
 
-      {/* Términos y Condiciones */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/60">
-        <button
-          onClick={() => setOpenTerms(!openTerms)}
-          className="w-full flex items-center justify-between font-serif font-bold text-stone-800 text-lg cursor-pointer"
+      {/* Términos y Condiciones Enlace a /terminos */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/60 shadow-sm hover:shadow-md transition-shadow">
+        <Link
+          href="/terminos"
+          className="w-full flex items-center justify-between font-serif font-bold text-stone-800 text-lg hover:text-emerald-800 transition-colors group"
         >
-          <span>Términos y Condiciones de Reserva</span>
-          {openTerms ? <ChevronUp className="w-5 h-5 text-stone-500" /> : <ChevronDown className="w-5 h-5 text-stone-500" />}
-        </button>
-
-        {openTerms && (
-          <div className="mt-4 pt-4 border-t border-stone-100 space-y-3 text-xs sm:text-sm text-stone-600 leading-relaxed animate-in fade-in duration-300">
-            <p>• La reserva del lugar se realiza abonando una seña equivalente al 20% de la inversión. El saldo restante puede abonarse hasta 72hs antes del retiro.</p>
-            <p>• Cancelación con más de 1 mes de anticipación: reintegro del 100% de lo abonado.</p>
-            <p>• Cancelación con menos de 1 mes de anticipación: no aplica reembolso.</p>
-            <p>• En caso de imprevistos climáticos, huelgas o problemas de transporte personales que impidan la llegada, el depósito no es reembolsable.</p>
-            <p>• Si por alguna razón la organización debe cancelar el evento, se reembolsará el 100% de los valores abonados.</p>
-            <p>• Al participar del Retiro Despertar, autorizas el registro fotográfico y audiovisual de difusión. Si prefieres no aparecer, por favor avísanos antes de comenzar.</p>
-          </div>
-        )}
+          <span className="flex items-center gap-2.5">
+            <FileText className="w-5 h-5 text-emerald-800" />
+            <span>Términos y Condiciones de Reserva</span>
+          </span>
+          <ChevronRight className="w-5 h-5 text-stone-400 group-hover:text-emerald-800 group-hover:translate-x-1 transition-all" />
+        </Link>
       </div>
     </div>
   );

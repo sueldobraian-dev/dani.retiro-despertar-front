@@ -2,30 +2,38 @@ import { ExperienceImage } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const mockImages: ExperienceImage[] = [
+interface CarouselItem extends ExperienceImage {
+  href: string;
+}
+
+const mockImages: CarouselItem[] = [
   {
     id: '1',
     src: '/images/experience/meditacion.jpg',
     alt: 'Meditación grupal en la naturaleza',
     caption: 'Espacio de Meditación & Yoga',
+    href: '/galeria#actividades',
   },
   {
     id: '2',
     src: '/images/experience/comida.jpg',
     alt: 'Comida saludable y vegetariana',
     caption: 'Nutrición consciente y saludable',
+    href: '/galeria#gastronomia',
   },
   {
     id: '3',
     src: '/images/experience/fogata.jpg',
     alt: 'Fuego central en la noche del retiro',
     caption: 'Círculo de fuego y sanación grupal',
+    href: '/galeria#retiro-despertar/tigre-delta-minahasa',
   },
   {
     id: '4',
     src: '/images/experience/vista_aerea.jpg',
     alt: 'Entorno natural que rodea el retiro',
     caption: 'Entorno natural único y de desconexión',
+    href: '/galeria#retiro-despertar/chascomus-finca-los-coipos',
   },
 ];
 
@@ -48,9 +56,10 @@ export default function ImageCarousel() {
         {/* Carrusel en móvil y Grid en escritorio */}
         <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:overflow-x-visible md:snap-none md:pb-0">
           {mockImages.map((image) => (
-            <div
+            <Link
               key={image.id}
-              className="flex-shrink-0 w-[80vw] sm:w-[50vw] md:w-auto snap-center flex flex-col group"
+              href={image.href}
+              className="flex-shrink-0 w-[80vw] sm:w-[50vw] md:w-auto snap-center flex flex-col group cursor-pointer"
             >
               <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-md shadow-stone-100 border border-stone-100">
                 <Image
@@ -67,14 +76,14 @@ export default function ImageCarousel() {
                 </h3>
                 <p className="text-stone-500 text-sm mt-1">{image.alt}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 
-        {/* Enlace para redirigir a la galería */}
+        {/* Enlace para redirigir a la página de experiencia */}
         <div className="mt-12 text-center">
           <Link
-            href="/galeria"
+            href="/experiencia"
             className="inline-flex items-center gap-2 px-6 py-3 border border-emerald-700 hover:bg-emerald-50 text-emerald-800 rounded-full font-medium transition duration-300 ease-in-out shadow-sm"
           >
             Ver más sobre la experiencia
@@ -85,6 +94,5 @@ export default function ImageCarousel() {
         </div>
       </div>
     </section>
-
   );
 }

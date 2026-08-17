@@ -10,17 +10,36 @@ vi.mock('next/image', () => {
   };
 });
 
+// Mock next/link
+vi.mock('next/link', () => {
+  return {
+    default: ({ children, href, ...props }: any) => (
+      <a href={href} {...props}>
+        {children}
+      </a>
+    ),
+  };
+});
+
 describe('ImageCarousel Component', () => {
-  it('renders experience images and redirect link to gallery', () => {
+  it('renders experience cards with links to respective gallery sections', () => {
     render(<ImageCarousel />);
 
-    // Debe renderizar las imágenes del entorno
-    expect(screen.getByAltText('Meditación grupal en la naturaleza')).toBeInTheDocument();
-    expect(screen.getByAltText('Comida saludable y vegetariana')).toBeInTheDocument();
+    // Validar enlaces de las tarjetas
+    const yogaCard = screen.getByText('Espacio de Meditación & Yoga').closest('a');
+    expect(yogaCard).toHaveAttribute('href', '/galeria#actividades');
 
-    // Debe tener el enlace a la galería
-    const link = screen.getByRole('link', { name: /Ver más sobre la experiencia/i });
-    expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute('href', '/galeria');
+    const comidaCard = screen.getByText('Nutrición consciente y saludable').closest('a');
+    expect(comidaCard).toHaveAttribute('href', '/galeria#gastronomia');
+
+    const fogonCard = screen.getByText('Círculo de fuego y sanación grupal').closest('a');
+    expect(fogonCard).toHaveAttribute('href', '/galeria#retiro-despertar/chascomus-finca-los-coipos');
+
+    const deltaCard = screen.getByText('Entorno natural único y de desconexión').closest('a');
+    expect(deltaCard).toHaveAttribute('href', '/galeria#retiro-despertar/tigre-delta-minahasa');
+
+    // Debe tener el enlace a /experiencia
+    const experienceBtn = screen.getByRole('link', { name: /Ver más sobre la experiencia/i });
+    expect(experienceBtn).toHaveAttribute('href', '/experiencia');
   });
 });

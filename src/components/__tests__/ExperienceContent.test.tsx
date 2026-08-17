@@ -30,7 +30,7 @@ describe('ExperienceContent Component', () => {
     expect(screen.getByAltText('Organizadora: Dani')).toBeInTheDocument();
   });
 
-  it('switches to Chascomús capsule with parameterized coupon links', () => {
+  it('switches to Chascomús capsule with parameterized coupon links and terms link', () => {
     render(<ExperienceContent />);
 
     const chascomusTab = screen.getByRole('button', { name: /Finca Los Coipos/i });
@@ -43,6 +43,9 @@ describe('ExperienceContent Component', () => {
 
     const preventaLink = screen.getByText(/Quiero mi cupón de preventa/i).closest('a');
     expect(preventaLink).toHaveAttribute('href', expect.stringContaining('PREVENTA10'));
+
+    const termsLink = screen.getByText('Términos y Condiciones de Reserva').closest('a');
+    expect(termsLink).toHaveAttribute('href', '/terminos');
   });
 
   it('switches to Tigre Delta capsule when tab is clicked', () => {
