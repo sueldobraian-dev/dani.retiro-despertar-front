@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Sparkles,
@@ -13,14 +13,37 @@ import {
   Ticket,
   MessageSquare,
   FileText,
-  ChevronRight
+  ChevronRight,
+  Users,
+  X
 } from 'lucide-react';
 import { getGalleryUrl } from '@/lib/locationUrls';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 import ExperienceLocationCarousel from '@/components/experience/ExperienceLocationCarousel';
+import QuienesSomosCapsule from '@/components/experience/QuienesSomosCapsule';
 
 export default function ChascomusCapsule() {
   const [activeDay, setActiveDay] = useState<1 | 2>(1);
+  const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
+
+  // Cerrar modal con tecla Escape y bloquear scroll de fondo
+  useEffect(() => {
+    if (!isTeamModalOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsTeamModalOpen(false);
+      }
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = 'auto';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isTeamModalOpen]);
 
   const preventaWhatsAppUrl = getWhatsAppUrl(
     'Hola! Quisiera solicitar mi cupón de preventa (-10% OFF) para el Retiro Despertar en Finca Los Coipos. Código: PREVENTA10'
@@ -54,7 +77,7 @@ export default function ChascomusCapsule() {
             <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
               Un entorno natural, contenido y silencioso de 11 hectáreas con salida privada a la laguna. Un regalo para frenar, dejar de hacer y empezar a sentir.
             </p>
-            
+
             {/* Detalles rápidos de las instalaciones */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
               <div className="bg-stone-50 border border-stone-200/50 p-3 rounded-2xl">
@@ -154,6 +177,24 @@ export default function ChascomusCapsule() {
         </div>
       </div>
 
+      {/* Banner / Acceso contextual para conocer al equipo */}
+      <div className="bg-emerald-950/5 border border-emerald-800/15 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
+        <div className="space-y-1 text-center sm:text-left">
+          <h4 className="text-xl sm:text-2xl font-serif font-bold text-stone-800">
+            Conocé Nuestro Equipo
+          </h4>
+          <p className="text-stone-600 text-xs sm:text-sm max-w-xl">
+            Te presentamos a Verónica, Nancy y Daniela: las facilitadoras de las actividades que sostienen este espacio de sanación.
+          </p>
+        </div>
+        <button
+          onClick={() => setIsTeamModalOpen(true)}
+          className="px-6 py-3.5 bg-emerald-800 hover:bg-emerald-900 text-stone-50 rounded-2xl text-xs sm:text-sm font-semibold transition flex items-center gap-2 shrink-0 cursor-pointer shadow-md shadow-emerald-950/10"
+        >
+          <Users className="w-4 h-4" /> Conocer Facilitadoras
+        </button>
+      </div>
+
       {/* Carrusel de Fotos de Finca Los Coipos (Cloudinary tag: finca-los-coipos con experience-order) */}
       <ExperienceLocationCarousel
         tag="finca-los-coipos"
@@ -175,21 +216,19 @@ export default function ChascomusCapsule() {
           <div className="flex gap-2">
             <button
               onClick={() => setActiveDay(1)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition cursor-pointer ${
-                activeDay === 1
-                  ? 'bg-emerald-800 text-stone-50 shadow-sm'
-                  : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
-              }`}
+              className={`px-4 py-2 rounded-xl text-xs font-semibold transition cursor-pointer ${activeDay === 1
+                ? 'bg-emerald-800 text-stone-50 shadow-sm'
+                : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                }`}
             >
               Día 1 (Sábado)
             </button>
             <button
               onClick={() => setActiveDay(2)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition cursor-pointer ${
-                activeDay === 2
-                  ? 'bg-emerald-800 text-stone-50 shadow-sm'
-                  : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
-              }`}
+              className={`px-4 py-2 rounded-xl text-xs font-semibold transition cursor-pointer ${activeDay === 2
+                ? 'bg-emerald-800 text-stone-50 shadow-sm'
+                : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                }`}
             >
               Día 2 (Domingo)
             </button>
@@ -356,6 +395,45 @@ export default function ChascomusCapsule() {
           <ChevronRight className="w-5 h-5 text-stone-400 group-hover:text-emerald-800 group-hover:translate-x-1 transition-all" />
         </Link>
       </div>
+
+      {/* Modal Reutilizable con QuienesSomosCapsule */}
+      {isTeamModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-stone-950/80 backdrop-blur-md animate-in fade-in duration-200"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Información del equipo y facilitadoras"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsTeamModalOpen(false);
+          }}
+        >
+          <div className="relative w-full max-w-5xl max-h-[90vh] bg-stone-50 rounded-3xl shadow-2xl border border-stone-200/80 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
+            {/* Header del Modal */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-stone-200/80 bg-white sticky top-0 z-10">
+              <div className="flex items-center gap-2">
+                <span className="p-1.5 rounded-full bg-emerald-100 text-emerald-800">
+                  <Users className="w-4 h-4" />
+                </span>
+                <h3 className="font-serif font-bold text-stone-800 text-sm sm:text-base">
+                  Quiénes Somos • Equipo Despertar
+                </h3>
+              </div>
+              <button
+                onClick={() => setIsTeamModalOpen(false)}
+                className="p-2 text-stone-400 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 rounded-full transition cursor-pointer"
+                aria-label="Cerrar modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Contenido del Modal reutilizando QuienesSomosCapsule */}
+            <div className="overflow-y-auto p-4 sm:p-8">
+              <QuienesSomosCapsule />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

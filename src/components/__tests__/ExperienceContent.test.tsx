@@ -30,7 +30,7 @@ describe('ExperienceContent Component', () => {
     expect(screen.getByAltText('Organizadora: Dani')).toBeInTheDocument();
   });
 
-  it('switches to Chascomús capsule with parameterized coupon links and terms link', () => {
+  it('switches to Chascomús capsule with parameterized coupon links, terms link and team modal', () => {
     render(<ExperienceContent />);
 
     const chascomusTab = screen.getByRole('button', { name: /Finca Los Coipos/i });
@@ -46,6 +46,18 @@ describe('ExperienceContent Component', () => {
 
     const termsLink = screen.getByText('Términos y Condiciones de Reserva').closest('a');
     expect(termsLink).toHaveAttribute('href', '/terminos');
+
+    // Probar apertura del modal de facilitadoras
+    const teamBtn = screen.getByRole('button', { name: /Conocer Facilitadoras/i });
+    fireEvent.click(teamBtn);
+
+    expect(screen.getByRole('dialog', { name: /Información del equipo y facilitadoras/i })).toBeInTheDocument();
+    expect(screen.getByText('Quiénes Somos • Equipo Despertar')).toBeInTheDocument();
+
+    // Cerrar modal
+    const closeBtn = screen.getByRole('button', { name: /Cerrar modal/i });
+    fireEvent.click(closeBtn);
+    expect(screen.queryByRole('dialog', { name: /Información del equipo y facilitadoras/i })).not.toBeInTheDocument();
   });
 
   it('switches to Tigre Delta capsule when tab is clicked', () => {
