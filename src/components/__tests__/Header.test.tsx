@@ -57,7 +57,7 @@ describe('Header Component', () => {
     );
   });
 
-  it('scrolls to element when clicking section links on Home page', () => {
+  it('scrolls to element when clicking anchor section links on Home page', () => {
     const scrollMock = vi.fn();
     vi.spyOn(document, 'getElementById').mockReturnValue({
       scrollIntoView: scrollMock,
@@ -65,10 +65,10 @@ describe('Header Component', () => {
 
     render(<Header />);
 
-    const experienciaLink = screen.getAllByRole('link', { name: /La Experiencia/i })[0];
-    fireEvent.click(experienciaLink);
+    const retirosLink = screen.getAllByRole('link', { name: /Próximos Retiros/i })[0];
+    fireEvent.click(retirosLink);
 
-    expect(document.getElementById).toHaveBeenCalledWith('experiencia');
+    expect(document.getElementById).toHaveBeenCalledWith('proximos-retiros');
     expect(scrollMock).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' });
   });
 

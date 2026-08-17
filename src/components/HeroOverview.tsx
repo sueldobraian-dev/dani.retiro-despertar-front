@@ -1,8 +1,36 @@
 'use client';
 
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { getExperienceUrl } from '@/lib/locationUrls';
+import { supabase } from '@/lib/supabase';
 
 export default function HeroOverview() {
+  const [nextExperienceUrl, setNextExperienceUrl] = useState<string>(getExperienceUrl());
+
+  useEffect(() => {
+    const fetchNextRetreatLocation = async () => {
+      try {
+        const today = new Date().toISOString().split('T')[0];
+        const { data, error } = await supabase
+          .from('retreats')
+          .select('*, locations(*)')
+          .gte('end_date', today)
+          .order('start_date', { ascending: true })
+          .limit(1);
+
+        if (!error && data && data.length > 0 && data[0].locations?.gallery_url) {
+          setNextExperienceUrl(getExperienceUrl(data[0].locations.gallery_url));
+        }
+      } catch (err) {
+        console.error('Error fetching next retreat location for Hero:', err);
+      }
+    };
+
+    fetchNextRetreatLocation();
+  }, []);
+
   return (
     <section id="inicio" className="relative overflow-hidden py-16 sm:py-24 lg:py-0 lg:min-h-[85vh] lg:flex lg:items-center bg-stone-50">
       {/* Imagen de fondo disponible en todas las resoluciones */}
@@ -31,32 +59,18 @@ export default function HeroOverview() {
             Regálate un fin de semana de paz y conexión profunda. Combinamos el poder de las <strong>Constelaciones Familiares</strong>, la armonía del <strong>Reiki</strong> y el bienestar del <strong>Yoga</strong> en un entorno natural único, acompañado por la propuesta gastronómica de nuestro <strong>chef privado</strong> para tu renovación integral.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 pt-4">
-            <a
-              href="#proximos-retiros"
-              onClick={(e) => {
-                if (typeof window !== 'undefined') {
-                  e.preventDefault();
-                  const element = document.getElementById('proximos-retiros');
-                  if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-              }}
+            <Link
+              href={nextExperienceUrl}
               className="px-8 py-4 bg-emerald-700 hover:bg-emerald-800 text-stone-50 rounded-full font-medium transition duration-300 ease-in-out text-center shadow-md shadow-emerald-900/10 hover:shadow-emerald-900/20 cursor-pointer"
             >
               Próximo Retiro
-            </a>
-            <a
-              href="#experiencia"
-              onClick={(e) => {
-                if (typeof window !== 'undefined') {
-                  e.preventDefault();
-                  const element = document.getElementById('experiencia');
-                  if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-              }}
+            </Link>
+            <Link
+              href="/experiencia"
               className="px-8 py-4 border border-stone-200 hover:border-stone-400 text-stone-700 hover:text-stone-900 rounded-full font-medium transition duration-300 ease-in-out text-center bg-white/50 cursor-pointer"
             >
               Conocer la experiencia
-            </a>
+            </Link>
           </div>
         </div>
       </div>

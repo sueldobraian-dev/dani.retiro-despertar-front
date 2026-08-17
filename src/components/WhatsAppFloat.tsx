@@ -2,13 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { X, MessageSquare, ArrowRight } from 'lucide-react';
+import { getWhatsAppUrl, DEFAULT_WHATSAPP_MESSAGE } from '@/lib/whatsapp';
 
 export default function WhatsAppFloat() {
   const [isMinimized, setIsMinimized] = useState<boolean>(true);
   const [isShaking, setIsShaking] = useState<boolean>(false);
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '5492212007660';
-  const message = 'Hola me interesa formar parte de la experiencia. Me contás como puedo avanzar?';
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+  const [customMessage, setCustomMessage] = useState<string>(DEFAULT_WHATSAPP_MESSAGE);
 
   useEffect(() => {
     // Cargar estado guardado en localStorage
@@ -21,7 +20,13 @@ export default function WhatsAppFloat() {
       }
     }
 
-    const handleOpen = () => {
+    const handleOpen = (e: Event) => {
+      const customEvt = e as CustomEvent<{ message?: string }>;
+      if (customEvt.detail?.message) {
+        setCustomMessage(customEvt.detail.message);
+      } else {
+        setCustomMessage(DEFAULT_WHATSAPP_MESSAGE);
+      }
       setIsMinimized(false);
       localStorage.setItem('whatsapp-minimized', 'false');
       setIsShaking(true);
@@ -44,6 +49,8 @@ export default function WhatsAppFloat() {
     setIsMinimized(false);
     localStorage.setItem('whatsapp-minimized', 'false');
   };
+
+  const whatsappUrl = getWhatsAppUrl(customMessage);
 
   if (isMinimized) {
     return (

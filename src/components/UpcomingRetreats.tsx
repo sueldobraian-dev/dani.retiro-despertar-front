@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { Calendar, MapPin, Clock, Info, RefreshCw, AlertCircle, Users, Camera } from 'lucide-react';
+import { Calendar, MapPin, Clock, Info, RefreshCw, AlertCircle, Users, Camera, Sparkles } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { getGalleryUrl, getExperienceUrl } from '@/lib/locationUrls';
+import { getWhatsAppUrl } from '@/lib/whatsapp';
 
 interface Location {
   id: string;
@@ -297,12 +299,20 @@ export default function UpcomingRetreats() {
                               </a>
                             )}
                             {nextRetreat.locations?.gallery_url && (
-                              <Link
-                                href={nextRetreat.locations.gallery_url}
-                                className="text-xs text-emerald-700 hover:text-emerald-900 underline font-semibold transition flex items-center gap-1"
-                              >
-                                <Camera className="w-3.5 h-3.5" /> Ver Galería
-                              </Link>
+                              <>
+                                <Link
+                                  href={getExperienceUrl(nextRetreat.locations.gallery_url)}
+                                  className="text-xs text-emerald-700 hover:text-emerald-900 underline font-semibold transition flex items-center gap-1"
+                                >
+                                  <Sparkles className="w-3.5 h-3.5" /> Ver Experiencia
+                                </Link>
+                                <Link
+                                  href={getGalleryUrl(nextRetreat.locations.gallery_url)}
+                                  className="text-xs text-emerald-700 hover:text-emerald-900 underline font-semibold transition flex items-center gap-1"
+                                >
+                                  <Camera className="w-3.5 h-3.5" /> Ver Galería
+                                </Link>
+                              </>
                             )}
                           </div>
                         </div>
@@ -405,7 +415,9 @@ export default function UpcomingRetreats() {
 
               <div className="mt-8 pt-4 border-t border-stone-100">
                 <a
-                  href="#inscripcion"
+                  href={getWhatsAppUrl('Hola! Quisiera consultar por próximas fechas y disponibilidad para el Retiro Despertar.')}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="block w-full py-3 text-center bg-stone-100 hover:bg-stone-200/80 text-stone-700 hover:text-stone-900 font-semibold rounded-2xl text-xs transition duration-300 border border-stone-200/30"
                 >
                   Consultar por otras fechas

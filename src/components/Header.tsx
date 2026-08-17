@@ -8,7 +8,7 @@ import DespertarIcon from './DespertarIcon';
 
 const NAV_ITEMS = [
   { id: 'inicio', label: 'Inicio', path: '/' },
-  { id: 'experiencia', label: 'La Experiencia', path: '/#experiencia' },
+  { id: 'experiencia', label: 'La Experiencia', path: '/experiencia' },
   { id: 'proximos-retiros', label: 'Próximos Retiros', path: '/#proximos-retiros' },
   { id: 'galeria', label: 'Galería', path: '/galeria' },
   { id: 'testimonios', label: 'Testimonios', path: '/#testimonios' },
@@ -28,9 +28,13 @@ export default function Header() {
 
     window.addEventListener('scroll', handleScroll);
 
-    // Si estamos en la página de galería, la sección activa es 'galeria'
     if (pathname === '/galeria') {
       setActiveSection('galeria');
+      return () => window.removeEventListener('scroll', handleScroll);
+    }
+
+    if (pathname === '/experiencia') {
+      setActiveSection('experiencia');
       return () => window.removeEventListener('scroll', handleScroll);
     }
 
@@ -54,7 +58,7 @@ export default function Header() {
     const observer = new IntersectionObserver(observerCallback, observerOptions);
 
     NAV_ITEMS.forEach((item) => {
-      if (item.id !== 'galeria') {
+      if (item.id !== 'galeria' && item.id !== 'experiencia') {
         const element = document.getElementById(item.id);
         if (element) observer.observe(element);
       }
@@ -78,7 +82,7 @@ export default function Header() {
         }
       },
       {
-        condition: item.id === 'galeria',
+        condition: item.id === 'galeria' || item.id === 'experiencia',
         run: () => { }
       },
       {
@@ -104,8 +108,8 @@ export default function Header() {
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled
-          ? 'bg-stone-50/90 backdrop-blur-md shadow-sm shadow-stone-200/40 border-b border-stone-100/80 py-4'
-          : 'bg-stone-50/50 backdrop-blur-sm border-b border-transparent py-5'
+        ? 'bg-stone-50/90 backdrop-blur-md shadow-sm shadow-stone-200/40 border-b border-stone-100/80 py-4'
+        : 'bg-stone-50/50 backdrop-blur-sm border-b border-transparent py-5'
         }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
@@ -138,8 +142,8 @@ export default function Header() {
               href={item.path}
               onClick={(e) => handleNavClick(e, item)}
               className={`text-sm font-medium tracking-wide transition-colors duration-300 relative py-1 ${activeSection === item.id
-                  ? 'text-emerald-800 font-semibold'
-                  : 'text-stone-600 hover:text-stone-900'
+                ? 'text-emerald-800 font-semibold'
+                : 'text-stone-600 hover:text-stone-900'
                 }`}
             >
               {item.label}
@@ -170,7 +174,16 @@ export default function Header() {
             </a>
           </div>
           <button
-            onClick={() => window.dispatchEvent(new CustomEvent('open-whatsapp'))}
+            onClick={() =>
+              window.dispatchEvent(
+                new CustomEvent('open-whatsapp', {
+                  detail: {
+                    message:
+                      'Hola! Quisiera ponerme en contacto para solicitar más información sobre el Retiro Despertar.',
+                  },
+                })
+              )
+            }
             className="px-5 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-stone-50 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 shadow-sm shadow-emerald-950/10 hover:shadow-emerald-950/20 cursor-pointer"
           >
             Contactanos
@@ -199,8 +212,8 @@ export default function Header() {
               href={item.path}
               onClick={(e) => handleNavClick(e, item)}
               className={`text-base font-medium py-2 px-3 rounded-xl transition duration-300 ${activeSection === item.id
-                  ? 'bg-emerald-50 text-emerald-800 font-semibold'
-                  : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+                ? 'bg-emerald-50 text-emerald-800 font-semibold'
+                : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
                 }`}
             >
               {item.label}
@@ -209,7 +222,14 @@ export default function Header() {
           <button
             onClick={() => {
               setIsMobileMenuOpen(false);
-              window.dispatchEvent(new CustomEvent('open-whatsapp'));
+              window.dispatchEvent(
+                new CustomEvent('open-whatsapp', {
+                  detail: {
+                    message:
+                      'Hola! Quisiera ponerme en contacto para solicitar más información sobre el Retiro Despertar.',
+                  },
+                })
+              );
             }}
             className="w-full py-3 bg-emerald-700 hover:bg-emerald-800 text-stone-50 rounded-xl text-center font-semibold tracking-wide transition duration-300 shadow-sm cursor-pointer"
           >
