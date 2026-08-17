@@ -399,7 +399,7 @@ export default function ChascomusCapsule() {
       {/* Modal Reutilizable con QuienesSomosCapsule */}
       {isTeamModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-stone-950/80 backdrop-blur-md animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-start sm:items-center justify-center pt-[max(env(safe-area-inset-top),3.5rem)] pb-[max(env(safe-area-inset-bottom),2rem)] px-3 sm:px-6 bg-stone-950/80 backdrop-blur-md animate-in fade-in duration-200"
           role="dialog"
           aria-modal="true"
           aria-label="Información del equipo y facilitadoras"
@@ -407,20 +407,20 @@ export default function ChascomusCapsule() {
             if (e.target === e.currentTarget) setIsTeamModalOpen(false);
           }}
         >
-          <div className="relative w-full max-w-5xl max-h-[90vh] bg-stone-50 rounded-3xl shadow-2xl border border-stone-200/80 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-5xl max-h-[82vh] sm:max-h-[88vh] bg-stone-50 rounded-3xl shadow-2xl border border-stone-200/80 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
             {/* Header del Modal */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-stone-200/80 bg-white sticky top-0 z-10">
+            <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 border-b border-stone-200/80 bg-white sticky top-0 z-20 shrink-0">
               <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-full bg-emerald-100 text-emerald-800">
+                <span className="p-1.5 rounded-full bg-emerald-100 text-emerald-800 shrink-0">
                   <Users className="w-4 h-4" />
                 </span>
-                <h3 className="font-serif font-bold text-stone-800 text-sm sm:text-base">
+                <h3 className="font-serif font-bold text-stone-800 text-sm sm:text-base line-clamp-1">
                   Quiénes Somos • Equipo Despertar
                 </h3>
               </div>
               <button
                 onClick={() => setIsTeamModalOpen(false)}
-                className="p-2 text-stone-400 hover:text-stone-800 bg-stone-100 hover:bg-stone-200 rounded-full transition cursor-pointer"
+                className="w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center text-stone-500 hover:text-stone-900 bg-stone-100 hover:bg-stone-200 rounded-full transition cursor-pointer shrink-0 border border-stone-200/80"
                 aria-label="Cerrar modal"
               >
                 <X className="w-5 h-5" />
