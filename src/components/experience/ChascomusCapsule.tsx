@@ -85,7 +85,7 @@ export default function ChascomusCapsule() {
             </p>
 
             {/* Detalles rápidos de las instalaciones */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
               <div className="bg-stone-50 border border-stone-200/50 p-3 rounded-2xl">
                 <span className="block text-xs font-bold text-stone-800">11 Hectáreas</span>
                 <span className="text-[11px] text-stone-500">Pura naturaleza</span>
@@ -93,6 +93,10 @@ export default function ChascomusCapsule() {
               <div className="bg-stone-50 border border-stone-200/50 p-3 rounded-2xl">
                 <span className="block text-xs font-bold text-stone-800">Laguna Privada</span>
                 <span className="text-[11px] text-stone-500">Salida exclusiva</span>
+              </div>
+              <div className="bg-stone-50 border border-stone-200/50 p-3 rounded-2xl">
+                <span className="block text-xs font-bold text-stone-800">Pensión Completa</span>
+                <span className="text-[11px] text-stone-500">Menú consciente</span>
               </div>
               <div className="bg-stone-50 border border-stone-200/50 p-3 rounded-2xl">
                 <span className="block text-xs font-bold text-stone-800">Cupos Limitados</span>
