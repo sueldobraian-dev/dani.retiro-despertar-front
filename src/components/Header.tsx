@@ -11,7 +11,7 @@ const NAV_ITEMS = [
   { id: 'experiencia', label: 'La Experiencia', path: '/experiencia' },
   { id: 'proximos-retiros', label: 'Próximos Retiros', path: '/#proximos-retiros' },
   { id: 'galeria', label: 'Galería', path: '/galeria' },
-  { id: 'testimonios', label: 'Testimonios', path: '/#testimonios' },
+  { id: 'testimonios', label: 'Testimonios', path: '/testimonios' },
 ];
 
 export default function Header() {
@@ -38,6 +38,11 @@ export default function Header() {
       return () => window.removeEventListener('scroll', handleScroll);
     }
 
+    if (pathname === '/testimonios') {
+      setActiveSection('testimonios');
+      return () => window.removeEventListener('scroll', handleScroll);
+    }
+
     // Configurar Intersection Observer para detectar en qué sección estamos en la home
     const observerOptions = {
       root: null,
@@ -58,7 +63,7 @@ export default function Header() {
     const observer = new IntersectionObserver(observerCallback, observerOptions);
 
     NAV_ITEMS.forEach((item) => {
-      if (item.id !== 'galeria' && item.id !== 'experiencia') {
+      if (item.id !== 'galeria' && item.id !== 'experiencia' && item.id !== 'testimonios') {
         const element = document.getElementById(item.id);
         if (element) observer.observe(element);
       }
@@ -82,7 +87,7 @@ export default function Header() {
         }
       },
       {
-        condition: item.id === 'galeria' || item.id === 'experiencia',
+        condition: item.id === 'galeria' || item.id === 'experiencia' || item.id === 'testimonios',
         run: () => { }
       },
       {
@@ -98,6 +103,7 @@ export default function Header() {
         }
       }
     ];
+
 
     const matched = strategies.find(s => s.condition);
     if (matched) {

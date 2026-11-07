@@ -40,6 +40,7 @@ describe('Header Component', () => {
     expect(screen.getAllByRole('link', { name: /Inicio/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /La Experiencia/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Galería/i }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('link', { name: /Testimonios/i }).length).toBeGreaterThan(0);
   });
 
   it('dispatches open-whatsapp event when Contactanos button is clicked', () => {
@@ -86,6 +87,22 @@ describe('Header Component', () => {
     // No debe buscar ni hacer scroll a un elemento de galería
     expect(scrollMock).not.toHaveBeenCalled();
   });
+
+  it('allows natural navigation to /testimonios without scrollIntoView', () => {
+    const scrollMock = vi.fn();
+    vi.spyOn(document, 'getElementById').mockReturnValue({
+      scrollIntoView: scrollMock,
+    } as any);
+
+    render(<Header />);
+
+    const testimoniosLink = screen.getAllByRole('link', { name: /Testimonios/i })[0];
+    fireEvent.click(testimoniosLink);
+
+    expect(scrollMock).not.toHaveBeenCalled();
+    expect(testimoniosLink).toHaveAttribute('href', '/testimonios');
+  });
+
 
   it('toggles mobile menu on drawer button click', () => {
     const { container } = render(<Header />);

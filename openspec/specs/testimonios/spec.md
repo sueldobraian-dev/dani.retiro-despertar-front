@@ -22,22 +22,22 @@ Los testimonios deben persistirse en la base de datos Supabase en la tabla `test
 
 #### Schema
 - `id`: `UUID PRIMARY KEY DEFAULT gen_random_uuid()`
-- `name`: `TEXT NOT NULL`
-- `role`: `TEXT` (ej. "Participante de Constelaciones", "Practicante de Yoga")
-- `comment`: `TEXT` (requerido para testimonios escritos)
-- `avatar_url`: `TEXT` (opcional)
-- `rating`: `INTEGER DEFAULT 5`
+- `title`: `TEXT NOT NULL` (para testimonios escritos: nombre del participante; para videos y shorts: título del video)
+- `content`: `TEXT NOT NULL` (para testimonios escritos: texto de la reseña/comentario; para videos y shorts: URL de YouTube)
+- `subtitle`: `TEXT` (opcional: rol/disciplina en escritos ej. *"Participante de Constelaciones"*, o autor/contexto en videos ej. *"Camila • Registro Delta"*)
+- `avatar_url`: `TEXT` (opcional: foto de perfil o miniatura personalizada)
+- `rating`: `INTEGER DEFAULT 5` (calificación 1 a 5)
 - `type`: `TEXT NOT NULL CHECK (type IN ('written', 'video', 'short'))`
-- `video_url`: `TEXT` (URL completa o ID de YouTube)
-- `video_title`: `TEXT` (Título descriptivo del video)
 - `likes_count`: `INTEGER NOT NULL DEFAULT 0`
 - `is_published`: `BOOLEAN NOT NULL DEFAULT true`
 - `created_at`: `TIMESTAMPTZ NOT NULL DEFAULT now()`
 
 #### Acceptance Criteria
 - Habilitar RLS en `testimonials` con política de lectura pública `FOR SELECT TO public USING (is_published = true)`.
+- `title` y `content` deben ser obligatorios (`NOT NULL`) para cualquier tipo de testimonio, evitando columnas vacías o nulas.
 - Crear funciones Postgres `increment_testimonial_like(testimonial_id UUID)` y `decrement_testimonial_like(testimonial_id UUID)` con `SECURITY DEFINER` para mutar `likes_count` de forma controlada sin exponer actualización arbitraria a la tabla.
 - Proporcionar dataset de contingencia local en `src/data/testimonials.json` ante pausas de inactividad de Supabase.
+
 
 ---
 
