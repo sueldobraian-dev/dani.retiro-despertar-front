@@ -1,10 +1,51 @@
 import { ExperienceImage } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Users, Trees, Waves, ChevronRight, Sparkles } from 'lucide-react';
 
 interface CarouselItem extends ExperienceImage {
   href: string;
 }
+
+interface ExperienceCapsulePreview {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  href: string;
+  icon: 'users' | 'trees' | 'waves';
+  badge?: string;
+}
+
+const EXPERIENCE_CAPSULE_PREVIEWS: ExperienceCapsulePreview[] = [
+  {
+    id: 'quienes-somos',
+    title: 'Quiénes Somos',
+    subtitle: 'Nuestra esencia y equipo',
+    description:
+      'Conocé a Vero, Nancy y Dani: las facilitadoras y organizadora que sostienen cada encuentro con amor y presencia.',
+    href: '/experiencia#quienes-somos',
+    icon: 'users',
+  },
+  {
+    id: 'chascomus-finca-los-coipos',
+    title: 'Finca Los Coipos (Chascomús)',
+    subtitle: 'Naturaleza y caballos',
+    description:
+      '11 hectáreas con laguna privada, Constelaciones con caballos, Yoga, Reiki, cronograma paso a paso y cómo llegar.',
+    href: '/experiencia#retiro-despertar/chascomus-finca-los-coipos',
+    icon: 'trees',
+  },
+  {
+    id: 'tigre-delta-minahasa',
+    title: 'Complejo Minahasa (Delta)',
+    subtitle: 'Paz sobre el río',
+    description:
+      'Una inmersión profunda entre arroyos, silencio e islas en la vegetación del Delta de Tigre.',
+    href: '/experiencia#retiro-despertar/tigre-delta-minahasa',
+    icon: 'waves',
+  },
+];
 
 const mockImages: CarouselItem[] = [
   {
@@ -80,8 +121,65 @@ export default function ImageCarousel() {
           ))}
         </div>
 
+        {/* Accesos directos a las 3 Cápsulas de /experiencia */}
+        <div className="mt-14 pt-12 border-t border-stone-100">
+          <div className="text-center max-w-2xl mx-auto mb-8">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-100">
+              <Sparkles className="w-3.5 h-3.5" /> Explorá en Detalle
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-serif font-bold text-stone-800 mt-3">
+              Conocé Nuestro Equipo y Sedes
+            </h3>
+            <p className="text-stone-600 text-sm sm:text-base mt-2">
+              Elegí qué aspecto de la experiencia querés descubrir en profundidad:
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {EXPERIENCE_CAPSULE_PREVIEWS.map((capsule) => (
+              <Link
+                key={capsule.id}
+                href={capsule.href}
+                className="group bg-stone-50/80 hover:bg-emerald-50/40 rounded-3xl p-6 sm:p-7 border border-stone-200/70 hover:border-emerald-300/80 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between"
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="w-11 h-11 rounded-2xl bg-emerald-800 text-stone-50 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+                      {capsule.icon === 'users' && <Users className="w-5 h-5" />}
+                      {capsule.icon === 'trees' && <Trees className="w-5 h-5" />}
+                      {capsule.icon === 'waves' && <Waves className="w-5 h-5" />}
+                    </div>
+                    {capsule.badge && (
+                      <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-100/80 text-amber-900 border border-amber-200/60">
+                        {capsule.badge}
+                      </span>
+                    )}
+                  </div>
+
+                  <div>
+                    <span className="text-xs font-semibold uppercase tracking-wider text-emerald-800">
+                      {capsule.subtitle}
+                    </span>
+                    <h4 className="text-xl font-serif font-bold text-stone-800 mt-1 group-hover:text-emerald-900 transition-colors">
+                      {capsule.title}
+                    </h4>
+                    <p className="text-stone-600 text-xs sm:text-sm leading-relaxed mt-2">
+                      {capsule.description}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-stone-200/60 flex items-center justify-between text-xs sm:text-sm font-semibold text-emerald-800 group-hover:text-emerald-950">
+                  <span>Ver detalle completo</span>
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
         {/* Enlace para redirigir a la página de experiencia */}
-        <div className="mt-12 text-center">
+        <div className="mt-10 text-center">
           <Link
             href="/experiencia"
             className="inline-flex items-center gap-2 px-6 py-3 border border-emerald-700 hover:bg-emerald-50 text-emerald-800 rounded-full font-medium transition duration-300 ease-in-out shadow-sm"

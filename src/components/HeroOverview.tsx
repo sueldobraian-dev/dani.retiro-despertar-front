@@ -65,25 +65,15 @@ export default function HeroOverview() {
             >
               Próximo Retiro
             </Link>
-            <a
-              href="#experiencia"
-              onClick={(e) => {
-                if (typeof window !== 'undefined') {
-                  const element = document.getElementById('experiencia');
-                  if (element) {
-                    e.preventDefault();
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    window.history.replaceState(null, '', '#experiencia');
-                  }
-                }
-              }}
+            <Link
+              href="/galeria"
               className="px-8 py-4 border border-stone-200 hover:border-stone-400 text-stone-700 hover:text-stone-900 rounded-full font-medium transition duration-300 ease-in-out text-center bg-white/50 cursor-pointer"
             >
               Conocer la experiencia
-            </a>
-          </div>
+          </Link>
         </div>
       </div>
-    </section>
+    </div>
+    </section >
   );
 }

@@ -41,5 +41,21 @@ describe('ImageCarousel Component', () => {
     // Debe tener el enlace a /experiencia
     const experienceBtn = screen.getByRole('link', { name: /Ver más sobre la experiencia/i });
     expect(experienceBtn).toHaveAttribute('href', '/experiencia');
+
+    // Validar las 3 tarjetas de acceso directo a las cápsulas de /experiencia
+    const quienesSomosCapsule = screen.getByText('Quiénes Somos').closest('a');
+    expect(quienesSomosCapsule).toHaveAttribute('href', '/experiencia#quienes-somos');
+
+    const chascomusCapsule = screen.getByText('Finca Los Coipos (Chascomús)').closest('a');
+    expect(chascomusCapsule).toHaveAttribute(
+      'href',
+      '/experiencia#retiro-despertar/chascomus-finca-los-coipos'
+    );
+
+    const deltaCapsule = screen.getByText('Complejo Minahasa (Delta)').closest('a');
+    expect(deltaCapsule).toHaveAttribute(
+      'href',
+      '/experiencia#retiro-despertar/tigre-delta-minahasa'
+    );
   });
 });
