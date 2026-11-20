@@ -7,21 +7,19 @@ import {
   Sparkles,
   Utensils,
   Sun,
-  CheckCircle2,
   Camera,
   Heart,
-  Tag,
-  Ticket,
-  MessageSquare,
   FileText,
   ChevronRight,
   Users,
+  MapPin,
   X
 } from 'lucide-react';
 import { getGalleryUrl } from '@/lib/locationUrls';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
 import ExperienceLocationCarousel from '@/components/experience/ExperienceLocationCarousel';
 import QuienesSomosCapsule from '@/components/experience/QuienesSomosCapsule';
+import PromoCouponsSection from '@/components/PromoCouponsSection';
 
 export default function ChascomusCapsule() {
   const [activeDay, setActiveDay] = useState<1 | 2>(1);
@@ -50,14 +48,6 @@ export default function ChascomusCapsule() {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isTeamModalOpen]);
-
-  const preventaWhatsAppUrl = getWhatsAppUrl(
-    'Hola! Quisiera solicitar mi cupón de preventa (-10% OFF) para el Retiro Despertar en Finca Los Coipos. Código: PREVENTA10'
-  );
-
-  const promoGrupalWhatsAppUrl = getWhatsAppUrl(
-    'Hola! Quisiera solicitar mi cupón promocional para 2 o más personas (-20% OFF) para el Retiro Despertar en Finca Los Coipos. Código: PROMO2MAS'
-  );
 
   const reservaWhatsAppUrl = getWhatsAppUrl(
     'Hola! Quiero consultar disponibilidad y reservar mi lugar para el Retiro Despertar en Finca Los Coipos.'
@@ -212,6 +202,35 @@ export default function ChascomusCapsule() {
         subtitle="Un vistazo a los rincones, laguna y naturaleza de nuestra sede en Chascomús"
       />
 
+      {/* Cómo llegar a Finca Los Coipos */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/60 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div className="flex items-start gap-4">
+          <div className="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5">
+            <MapPin className="w-5 h-5" />
+          </div>
+          <div className="space-y-1">
+            <span className="text-xs font-semibold text-emerald-800 uppercase tracking-wider">
+              Ubicación y Acceso
+            </span>
+            <h3 className="text-xl font-serif font-bold text-stone-800">
+              Cómo llegar a Finca Los Coipos
+            </h3>
+            <p className="text-stone-600 text-xs sm:text-sm leading-relaxed max-w-2xl">
+              Tomar Autovía 2 hasta el km 134.5 (Chascomús, Buenos Aires). La entrada se encuentra a solo 25 metros de la ruta, con ingreso directo desde Ruta 2.
+            </p>
+          </div>
+        </div>
+        <a
+          href="https://www.google.com/maps/place/FINCA+LOS+COIPOS/@-35.6872383,-57.9587255,17z/data=!4m6!3m5!1s0x95986b00246fef5d:0x1d00c91f49723b18!8m2!3d-35.6872383!4d-57.9587255!16s%2Fg%2F11z4ymqqx8?entry=ttu&g_ep=EgoyMDI2MDcxNC4wIKXMDSoASAFQAw%3D%3D"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full sm:w-auto px-5 py-3 bg-stone-100 hover:bg-stone-200/80 text-stone-800 rounded-2xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-2 shrink-0 border border-stone-200/70"
+        >
+          <MapPin className="w-4 h-4 text-emerald-800" />
+          <span>Ver en Google Maps</span>
+        </a>
+      </div>
+
       {/* Cronograma / Programa del Retiro */}
       <div className="bg-white rounded-3xl p-6 sm:p-10 border border-stone-200/60 shadow-sm">
         <div className="space-y-4 mb-6 border-b border-stone-100 pb-5">
@@ -315,82 +334,7 @@ export default function ChascomusCapsule() {
       </div>
 
       {/* Inversión e Inclusiones con Botones Parametrizados de Cupones por WhatsApp */}
-      <div className="bg-gradient-to-br from-emerald-900 to-stone-900 text-stone-50 rounded-3xl p-8 sm:p-12 shadow-lg relative overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          <div className="space-y-4">
-            <span className="text-xs uppercase font-bold text-amber-300 tracking-wider">
-              Propuesta Integral
-            </span>
-            <h3 className="text-3xl font-serif font-bold">
-              Tu Experiencia Incluye
-            </h3>
-            <ul className="space-y-3 text-stone-200 text-xs sm:text-sm pt-2">
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>Alojamiento completo (2 días / 1 noche)</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>Todas las actividades (Constelaciones con caballos, Yoga, Reiki)</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>Alimentación completa con chef privado</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>Acompañamiento cercano durante todo el retiro</span>
-              </li>
-            </ul>
-            <p className="text-[11px] text-stone-400 pt-2">
-              * No incluye traslado (entrada a 25mts de Ruta 2, km 134.5). Se reserva lugar con seña del 20%.
-            </p>
-          </div>
-
-          {/* Botones de Cupones Parametrizados a WhatsApp */}
-          <div className="bg-white/10 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-white/20 space-y-4">
-            <div className="space-y-1">
-              <span className="text-xs text-amber-300 font-bold uppercase tracking-wider flex items-center gap-1">
-                <Tag className="w-3.5 h-3.5" /> Beneficios Exclusivos
-              </span>
-              <h4 className="text-xl font-serif font-bold text-white">
-                Solicitá tu Cupón de Descuento
-              </h4>
-              <p className="text-xs text-stone-300">
-                Escribinos directamente por WhatsApp con el código parametrizado para acceder al beneficio.
-              </p>
-            </div>
-
-            <div className="space-y-3 pt-2">
-              <a
-                href={preventaWhatsAppUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-stone-50 rounded-2xl font-semibold text-xs sm:text-sm transition flex items-center justify-between shadow-md cursor-pointer group"
-              >
-                <span className="flex items-center gap-2">
-                  <Ticket className="w-4 h-4 text-amber-300" />
-                  <span>Quiero mi cupón de preventa (-10% OFF)</span>
-                </span>
-                <MessageSquare className="w-4 h-4 text-emerald-200 group-hover:scale-110 transition-transform" />
-              </a>
-
-              <a
-                href={promoGrupalWhatsAppUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3.5 px-4 bg-emerald-800/80 hover:bg-emerald-700 text-stone-50 border border-emerald-400/30 rounded-2xl font-semibold text-xs sm:text-sm transition flex items-center justify-between shadow-md cursor-pointer group"
-              >
-                <span className="flex items-center gap-2">
-                  <Ticket className="w-4 h-4 text-amber-300" />
-                  <span>Quiero mi cupón promocional para 2 o más personas (-20% OFF)</span>
-                </span>
-                <MessageSquare className="w-4 h-4 text-emerald-200 group-hover:scale-110 transition-transform" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PromoCouponsSection embedded />
 
       {/* Términos y Condiciones Enlace a /terminos */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/60 shadow-sm hover:shadow-md transition-shadow">

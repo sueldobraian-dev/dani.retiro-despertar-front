@@ -1,8 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Sparkles } from 'lucide-react';
 import { CapsuleNavConfig, CapsuleTab } from '@/types/experience';
+import {
+  DEFAULT_EXPERIENCE_NAV_MODE,
+  ExperienceNavigationMode,
+} from '@/config/navigationConfig';
+import { useScrollSpy } from '@/hooks/useScrollSpy';
 import ExperienceNavTabs from '@/components/experience/ExperienceNavTabs';
 import QuienesSomosCapsule from '@/components/experience/QuienesSomosCapsule';
 import ChascomusCapsule from '@/components/experience/ChascomusCapsule';
@@ -35,20 +40,68 @@ export const CAPSULES: CapsuleNavConfig[] = [
   },
 ];
 
-export default function ExperienceContent() {
+const CAPSULE_RENDERERS: Record<CapsuleTab, () => React.ReactNode> = {
+  'quienes-somos': () => <QuienesSomosCapsule />,
+  'chascomus-finca-los-coipos': () => <ChascomusCapsule />,
+  'tigre-delta-minahasa': () => <DeltaCapsule />,
+};
+
+const HASH_MATCHERS: Array<{ match: (hash: string) => boolean; tab: CapsuleTab }> = [
+  {
+    match: (hash) => hash.includes('chascomus') || hash.includes('finca-los-coipos'),
+    tab: 'chascomus-finca-los-coipos',
+  },
+  {
+    match: (hash) => hash.includes('tigre') || hash.includes('minahasa') || hash.includes('delta'),
+    tab: 'tigre-delta-minahasa',
+  },
+  {
+    match: (hash) => hash.includes('quienes-somos') || hash.includes('equipo'),
+    tab: 'quienes-somos',
+  },
+];
+
+export interface ExperienceContentProps {
+  navigationMode?: ExperienceNavigationMode;
+}
+
+export default function ExperienceContent({
+  navigationMode = DEFAULT_EXPERIENCE_NAV_MODE,
+}: ExperienceContentProps) {
   const [activeTab, setActiveTab] = useState<CapsuleTab>('quienes-somos');
+  const isContinuousScroll = navigationMode === 'continuous-scroll';
+
+  const capsuleSectionIds = useMemo(() => CAPSULES.map((c) => c.id), []);
+
+  const { activeId: spiedCapsuleId } = useScrollSpy({
+    sectionIds: capsuleSectionIds,
+    defaultActiveId: 'quienes-somos',
+    enabled: isContinuousScroll,
+    updateHash: false,
+  });
+
+  useEffect(() => {
+    if (isContinuousScroll && spiedCapsuleId) {
+      setActiveTab(spiedCapsuleId as CapsuleTab);
+    }
+  }, [isContinuousScroll, spiedCapsuleId]);
 
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash.replace('#', '').toLowerCase();
       if (!hash) return;
 
-      if (hash.includes('chascomus') || hash.includes('finca-los-coipos')) {
-        setActiveTab('chascomus-finca-los-coipos');
-      } else if (hash.includes('tigre') || hash.includes('minahasa') || hash.includes('delta')) {
-        setActiveTab('tigre-delta-minahasa');
-      } else if (hash.includes('quienes-somos') || hash.includes('equipo')) {
-        setActiveTab('quienes-somos');
+      const matched = HASH_MATCHERS.find((m) => m.match(hash));
+      if (matched) {
+        setActiveTab(matched.tab);
+
+        if (isContinuousScroll) {
+          const sectionEl = document.getElementById(matched.tab);
+          if (sectionEl) {
+            sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            return;
+          }
+        }
       }
 
       const container = document.getElementById('experiencia-content');
@@ -60,17 +113,23 @@ export default function ExperienceContent() {
     handleHash();
     window.addEventListener('hashchange', handleHash);
     return () => window.removeEventListener('hashchange', handleHash);
-  }, []);
+  }, [isContinuousScroll]);
 
   const handleTabChange = (tab: CapsuleNavConfig) => {
     setActiveTab(tab.id);
     window.history.pushState(null, '', `#${tab.hash}`);
+
+    if (isContinuousScroll) {
+      const sectionEl = document.getElementById(tab.id);
+      if (sectionEl) {
+        sectionEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
   };
 
   return (
     <div id="experiencia-content" className="py-8 sm:py-14 bg-stone-50 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
         {/* Encabezado Principal */}
         <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-8">
           <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[11px] sm:text-xs font-semibold uppercase tracking-wider bg-emerald-100/70 text-emerald-900 border border-emerald-200/50 mb-3 sm:mb-4">
@@ -83,7 +142,6 @@ export default function ExperienceContent() {
             Explora nuestra identidad, nuestro equipo de facilitadoras y los espacios sagrados pensados para tu desconexión y renovación integral.
           </p>
         </div>
-
       </div>
 
       {/* Cápsulas / Pestañas Superiores Sticky Compactas */}
@@ -94,10 +152,21 @@ export default function ExperienceContent() {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Renderizado modular de cápsulas */}
-        {activeTab === 'quienes-somos' && <QuienesSomosCapsule />}
-        {activeTab === 'chascomus-finca-los-coipos' && <ChascomusCapsule />}
-        {activeTab === 'tigre-delta-minahasa' && <DeltaCapsule />}
+        {isContinuousScroll ? (
+          <div className="space-y-20">
+            {CAPSULES.map((capsule) => (
+              <section
+                key={capsule.id}
+                id={capsule.id}
+                className="scroll-mt-32"
+              >
+                {CAPSULE_RENDERERS[capsule.id]()}
+              </section>
+            ))}
+          </div>
+        ) : (
+          CAPSULE_RENDERERS[activeTab]()
+        )}
       </div>
     </div>
   );

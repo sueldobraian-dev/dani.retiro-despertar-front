@@ -14,5 +14,13 @@ describe('FeedbackCarousel Component', () => {
     expect(screen.getByText('Carolina Gómez')).toBeInTheDocument();
     expect(screen.getByText('Mariano Silva')).toBeInTheDocument();
     expect(screen.getByText('Valeria Castro')).toBeInTheDocument();
+
+    const viewMoreLink = screen.getByText(/Ver más testimonios/i).closest('a');
+    expect(viewMoreLink).toHaveAttribute('href', '/testimonios');
+  });
+
+  it('hides the view more button when showViewMoreButton is false', () => {
+    render(<FeedbackCarousel showViewMoreButton={false} />);
+    expect(screen.queryByText(/Ver más testimonios/i)).not.toBeInTheDocument();
   });
 });

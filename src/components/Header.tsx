@@ -1,76 +1,47 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Menu, X, Instagram, Facebook } from 'lucide-react';
 import DespertarIcon from './DespertarIcon';
+import { ACTIVE_NAV_ITEMS, NavItemConfig } from '@/config/navigationConfig';
+import { useScrollSpy } from '@/hooks/useScrollSpy';
 
-const NAV_ITEMS = [
-  { id: 'inicio', label: 'Inicio', path: '/' },
-  { id: 'experiencia', label: 'La Experiencia', path: '/experiencia' },
-  { id: 'proximos-retiros', label: 'Próximos Retiros', path: '/#proximos-retiros' },
-  { id: 'galeria', label: 'Galería', path: '/galeria' },
-  { id: 'testimonios', label: 'Testimonios', path: '/#testimonios' },
-];
+const PAGE_SECTION_MAP: Record<string, string> = {
+  '/galeria': 'galeria',
+  '/experiencia': 'experiencia',
+  '/testimonios': 'testimonios',
+};
 
 export default function Header() {
   const pathname = usePathname();
-  const [activeSection, setActiveSection] = useState('inicio');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
+  const scrollSectionIds = useMemo(
+    () => ACTIVE_NAV_ITEMS.filter((item) => item.type === 'scroll').map((item) => item.id),
+    []
+  );
+
+  const { activeId: scrollActiveSection, setActiveId: setScrollActiveSection } = useScrollSpy({
+    sectionIds: scrollSectionIds,
+    defaultActiveId: 'inicio',
+    enabled: pathname === '/',
+  });
+
+  const activeSection = PAGE_SECTION_MAP[pathname] || scrollActiveSection;
+
   useEffect(() => {
-    // Detectar el scroll para cambiar la opacidad/sombra del header
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
 
     window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-    if (pathname === '/galeria') {
-      setActiveSection('galeria');
-      return () => window.removeEventListener('scroll', handleScroll);
-    }
-
-    if (pathname === '/experiencia') {
-      setActiveSection('experiencia');
-      return () => window.removeEventListener('scroll', handleScroll);
-    }
-
-    // Configurar Intersection Observer para detectar en qué sección estamos en la home
-    const observerOptions = {
-      root: null,
-      rootMargin: '-50% 0px -50% 0px',
-      threshold: 0,
-    };
-
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const id = entry.target.id;
-          setActiveSection(id);
-          window.history.replaceState(null, '', `#${id}`);
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    NAV_ITEMS.forEach((item) => {
-      if (item.id !== 'galeria' && item.id !== 'experiencia') {
-        const element = document.getElementById(item.id);
-        if (element) observer.observe(element);
-      }
-    });
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      observer.disconnect();
-    };
-  }, [pathname]);
-
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, item: typeof NAV_ITEMS[0]) => {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, item: NavItemConfig) => {
     setIsMobileMenuOpen(false);
 
     const strategies = [
@@ -79,11 +50,11 @@ export default function Header() {
         run: () => {
           e.preventDefault();
           window.dispatchEvent(new CustomEvent('open-whatsapp'));
-        }
+        },
       },
       {
-        condition: item.id === 'galeria' || item.id === 'experiencia',
-        run: () => { }
+        condition: item.type === 'page',
+        run: () => { },
       },
       {
         condition: pathname === '/',
@@ -92,14 +63,14 @@ export default function Header() {
           const element = document.getElementById(item.id);
           if (element) {
             element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            setActiveSection(item.id);
+            setScrollActiveSection(item.id);
             window.history.replaceState(null, '', `#${item.id}`);
           }
-        }
-      }
+        },
+      },
     ];
 
-    const matched = strategies.find(s => s.condition);
+    const matched = strategies.find((s) => s.condition);
     if (matched) {
       matched.run();
     }
@@ -108,8 +79,8 @@ export default function Header() {
   return (
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled
-        ? 'bg-stone-50/90 backdrop-blur-md shadow-sm shadow-stone-200/40 border-b border-stone-100/80 py-4'
-        : 'bg-stone-50/50 backdrop-blur-sm border-b border-transparent py-5'
+          ? 'bg-stone-50/90 backdrop-blur-md shadow-sm shadow-stone-200/40 border-b border-stone-100/80 py-4'
+          : 'bg-stone-50/50 backdrop-blur-sm border-b border-transparent py-5'
         }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
@@ -136,14 +107,14 @@ export default function Header() {
 
         {/* Navegación Desktop */}
         <nav className="hidden md:flex items-center gap-8">
-          {NAV_ITEMS.map((item) => (
+          {ACTIVE_NAV_ITEMS.map((item) => (
             <Link
               key={item.id}
               href={item.path}
               onClick={(e) => handleNavClick(e, item)}
               className={`text-sm font-medium tracking-wide transition-colors duration-300 relative py-1 ${activeSection === item.id
-                ? 'text-emerald-800 font-semibold'
-                : 'text-stone-600 hover:text-stone-900'
+                  ? 'text-emerald-800 font-semibold'
+                  : 'text-stone-600 hover:text-stone-900'
                 }`}
             >
               {item.label}
@@ -206,14 +177,14 @@ export default function Header() {
           }`}
       >
         <nav className="flex flex-col px-6 space-y-4">
-          {NAV_ITEMS.map((item) => (
+          {ACTIVE_NAV_ITEMS.map((item) => (
             <Link
               key={item.id}
               href={item.path}
               onClick={(e) => handleNavClick(e, item)}
               className={`text-base font-medium py-2 px-3 rounded-xl transition duration-300 ${activeSection === item.id
-                ? 'bg-emerald-50 text-emerald-800 font-semibold'
-                : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+                  ? 'bg-emerald-50 text-emerald-800 font-semibold'
+                  : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
                 }`}
             >
               {item.label}

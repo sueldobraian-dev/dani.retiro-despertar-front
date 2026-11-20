@@ -40,15 +40,15 @@ export default function HeroOverview() {
           alt="Entorno natural del Retiro Despertar"
           fill
           priority
-          className="object-cover"
+          className="object-cover object-center lg:object-right"
         />
-        {/* Degradado responsivo: velo protector en móviles, degradado horizontal en pantallas grandes */}
-        <div className="absolute inset-0 bg-stone-50/85 lg:bg-transparent lg:bg-gradient-to-r lg:from-stone-50 lg:via-stone-50/90 lg:to-transparent w-full h-full" />
+        {/* Degradado responsivo: velo vertical suave en móviles, transición 38% -> 68% en pantallas grandes */}
+        <div className="absolute inset-0 bg-gradient-to-b from-stone-50/95 via-stone-50/80 to-stone-50/55 lg:bg-gradient-to-r lg:from-stone-50 lg:from-10% lg:via-stone-50/80 lg:via-38% lg:to-transparent lg:to-68% w-full h-full" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         {/* Contenido de texto */}
-        <div className="w-full lg:w-[55%] flex flex-col space-y-6 text-left">
+        <div className="w-full lg:w-[48%] flex flex-col space-y-6 text-left">
           <span className="text-emerald-800 font-semibold tracking-wider uppercase text-sm">
             Un Encuentro de Almas y Sanación
           </span>

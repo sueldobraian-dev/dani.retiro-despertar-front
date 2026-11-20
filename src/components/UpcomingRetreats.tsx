@@ -159,8 +159,8 @@ export default function UpcomingRetreats() {
     return `${startDay} de ${capitalizedMonth} al ${endDay} de ${capitalizedEndMonth} de ${year}`;
   };
 
-  const nextRetreat = retreats.find(r => r.is_confirmed) || retreats[0];
-  const otherRetreats = retreats.filter(r => r.id !== nextRetreat?.id);
+  const nextRetreat = retreats.find(r => r.is_confirmed) || null;
+  const otherRetreats = nextRetreat ? retreats.filter(r => r.id !== nextRetreat.id) : retreats;
 
   return (
     <section id="proximos-retiros" className="py-16 bg-stone-50 border-y border-stone-200/30 min-h-[400px] flex items-center">
@@ -245,8 +245,8 @@ export default function UpcomingRetreats() {
         {!loading && !error && retreats.length > 0 && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            {/* Próximo Retiro Destacado (Grande) */}
-            {nextRetreat && (
+            {/* Próximo Retiro Destacado (Grande) o Empty State Activo */}
+            {nextRetreat ? (
               <div className="lg:col-span-2 bg-white rounded-3xl border border-stone-200/50 shadow-md p-6 sm:p-8 md:p-10 flex flex-col justify-between relative overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-50 rounded-full blur-3xl opacity-60 pointer-events-none" />
 
@@ -298,28 +298,26 @@ export default function UpcomingRetreats() {
                                 (Ver en Google Maps)
                               </a>
                             )}
-                            {nextRetreat.locations?.gallery_url && (
-                              <>
-                                <Link
-                                  href={getExperienceUrl(nextRetreat.locations.gallery_url)}
-                                  className="text-xs text-emerald-700 hover:text-emerald-900 underline font-semibold transition flex items-center gap-1"
-                                >
-                                  <Sparkles className="w-3.5 h-3.5" /> Ver Experiencia
-                                </Link>
-                                <Link
-                                  href={getGalleryUrl(nextRetreat.locations.gallery_url)}
-                                  className="text-xs text-emerald-700 hover:text-emerald-900 underline font-semibold transition flex items-center gap-1"
-                                >
-                                  <Camera className="w-3.5 h-3.5" /> Ver Galería
-                                </Link>
-                              </>
-                            )}
                           </div>
                         </div>
-                        {nextRetreat.locations?.directions && (
-                          <p className="text-xs text-stone-500 bg-stone-50 border border-stone-200/50 p-3 rounded-2xl mt-1.5 leading-relaxed max-w-lg">
-                            <span className="font-semibold text-emerald-800">Cómo llegar:</span> {nextRetreat.locations.directions}
-                          </p>
+                        {nextRetreat.locations?.gallery_url && (
+                          <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-3 pt-3 max-w-lg">
+                            <Link
+                              href={getExperienceUrl(nextRetreat.locations.gallery_url)}
+                              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-emerald-700 hover:bg-emerald-800 text-stone-50 text-xs sm:text-sm font-semibold transition-all duration-300 shadow-sm shadow-emerald-950/10 hover:shadow-md active:scale-95"
+                            >
+                              <Sparkles className="w-4 h-4 text-amber-300 flex-shrink-0" />
+                              <span>Ver Experiencia</span>
+                            </Link>
+
+                            <Link
+                              href={getGalleryUrl(nextRetreat.locations.gallery_url)}
+                              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl bg-emerald-50/80 hover:bg-emerald-100 text-emerald-900 border border-emerald-200/80 text-xs sm:text-sm font-semibold transition-all duration-300 shadow-sm hover:shadow active:scale-95"
+                            >
+                              <Camera className="w-4 h-4 text-emerald-800 flex-shrink-0" />
+                              <span>Ver Galería</span>
+                            </Link>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -331,6 +329,49 @@ export default function UpcomingRetreats() {
                     La experiencia comienza en:
                   </span>
                   <CountdownTimer targetDate={nextRetreat.start_date} />
+                </div>
+              </div>
+            ) : (
+              <div className="lg:col-span-2 bg-white rounded-3xl border border-stone-200/50 shadow-md p-6 sm:p-8 md:p-10 flex flex-col justify-between relative overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="absolute -top-10 -right-10 w-44 h-44 bg-amber-50 rounded-full blur-3xl opacity-70 pointer-events-none" />
+                <div className="absolute -bottom-10 -left-10 w-44 h-44 bg-emerald-50 rounded-full blur-3xl opacity-70 pointer-events-none" />
+
+                <div className="relative z-10 space-y-4">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-200/70">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-700" /> Nueva Edición en Preparación
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-100">
+                      <Users className="w-3.5 h-3.5" /> Grupos reducidos y personalizados
+                    </span>
+                  </div>
+
+                  <h3 className="text-2xl sm:text-3xl font-serif text-stone-800 font-bold leading-snug">
+                    Estamos preparando nuestro próximo encuentro
+                  </h3>
+
+                  <p className="text-stone-600 text-sm sm:text-base leading-relaxed max-w-2xl">
+                    Muy pronto confirmaremos el día exacto de la próxima edición. Mientras tanto, podés revisar las ediciones programadas en el <strong>Calendario de Retiros</strong> o sumarte a nuestra <strong>lista prioritaria</strong> para enterarte antes que nadie y asegurar tu beneficio de preventa.
+                  </p>
+                </div>
+
+                <div className="relative z-10 mt-8 pt-6 border-t border-stone-100 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <a
+                    href={getWhatsAppUrl('Hola! Quiero sumarme a la lista prioritaria para enterarme apenas confirmen la próxima fecha del Retiro Despertar.')}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-emerald-700 hover:bg-emerald-800 text-stone-50 text-xs sm:text-sm font-semibold transition-all duration-300 shadow-sm shadow-emerald-950/10 hover:shadow-md active:scale-95"
+                  >
+                    <Sparkles className="w-4 h-4 text-amber-300 flex-shrink-0" />
+                    <span>Sumarme a la Lista Prioritaria</span>
+                  </a>
+
+                  <Link
+                    href={getExperienceUrl()}
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-stone-100 hover:bg-stone-200/80 text-stone-800 border border-stone-200/80 text-xs sm:text-sm font-semibold transition-all duration-300 active:scale-95"
+                  >
+                    <span>Conocer la Experiencia</span>
+                  </Link>
                 </div>
               </div>
             )}

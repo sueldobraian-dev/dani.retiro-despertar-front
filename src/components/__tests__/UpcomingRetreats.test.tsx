@@ -83,4 +83,44 @@ describe('UpcomingRetreats Component', () => {
       expect(screen.getByText(/No pudimos cargar las fechas/i)).toBeInTheDocument();
     });
   });
+
+  it('shows unconfirmed retreats only in Calendario de Retiros and renders the active empty state in Próxima Fecha', async () => {
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 20);
+    const startStr = futureDate.toISOString().split('T')[0];
+
+    const mockUnconfirmedRetreats = [
+      {
+        id: 'r2',
+        title: 'Retiro Despertar - Edición Primavera',
+        start_date: startStr,
+        end_date: startStr,
+        is_confirmed: false,
+        status_text: 'Octubre / Noviembre (A confirmar)',
+        max_capacity: 9,
+        locations: {
+          id: 'l1',
+          name: 'Finca los Coipos',
+          address: 'Chascomús, BsAs',
+          maps_url: 'https://maps.google.com',
+          directions: null,
+          gallery_url: '/galeria#retiro-despertar/chascomus-finca-los-coipos',
+        },
+      },
+    ];
+
+    mockSelect.mockResolvedValueOnce({ data: mockUnconfirmedRetreats, error: null });
+
+    render(<UpcomingRetreats />);
+
+    await waitFor(() => {
+      // Empty state activo en el bloque principal
+      expect(screen.getByText('Estamos preparando nuestro próximo encuentro')).toBeInTheDocument();
+      expect(screen.getByText('Sumarme a la Lista Prioritaria')).toBeInTheDocument();
+
+      // El retiro no confirmado aparece en Calendario de Retiros con su status_text
+      expect(screen.getByText('Retiro Despertar - Edición Primavera')).toBeInTheDocument();
+      expect(screen.getByText('Octubre / Noviembre (A confirmar)')).toBeInTheDocument();
+    });
+  });
 });
