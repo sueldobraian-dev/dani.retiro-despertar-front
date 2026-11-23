@@ -387,7 +387,7 @@ export default function ChascomusCapsule() {
 
             {/* Contenido del Modal con scroll independiente */}
             <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-8 space-y-6">
-              <QuienesSomosCapsule />
+              <QuienesSomosCapsule memberIds={['vero-nancy', 'dani']} />
               {/* Botón inferior para cerrar cómodamente */}
               <div className="pt-6 pb-8 border-t border-stone-200 text-center">
                 <button

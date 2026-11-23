@@ -23,7 +23,7 @@ const EXPERIENCE_CAPSULE_PREVIEWS: ExperienceCapsulePreview[] = [
     title: 'Quiénes Somos',
     subtitle: 'Nuestra esencia y equipo',
     description:
-      'Conocé a Vero, Nancy y Dani: las facilitadoras y organizadora que sostienen cada encuentro con amor y presencia.',
+      'Conocé a Vero, Nancy, Caro y Dani: las facilitadoras y organizadora que sostienen cada encuentro con amor y presencia.',
     href: '/experiencia#quienes-somos',
     icon: 'users',
   },

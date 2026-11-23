@@ -24,13 +24,16 @@ describe('ExperienceContent Component', () => {
     vi.restoreAllMocks();
   });
 
-  it('renders Quiénes Somos capsule with 2 team photos by default (tabs mode)', () => {
+  it('renders Quiénes Somos capsule with 3 team cards by default (tabs mode)', () => {
     render(<ExperienceContent />);
 
     expect(screen.getByText('Un Viaje al Centro del Alma')).toBeInTheDocument();
     expect(screen.getByText('Vero & Nancy')).toBeInTheDocument();
+    expect(screen.getByText('Caro')).toBeInTheDocument();
+    expect(screen.getByText('Carolina Basualdo')).toBeInTheDocument();
     expect(screen.getByText('Dani')).toBeInTheDocument();
     expect(screen.getByAltText('Facilitadoras: Vero y Nancy')).toBeInTheDocument();
+    expect(screen.getByAltText('Facilitadora: Caro (Carolina Basualdo)')).toBeInTheDocument();
     expect(screen.getByAltText('Organizadora: Dani')).toBeInTheDocument();
     expect(screen.queryByText('Finca Los Coipos – Chascomús')).not.toBeInTheDocument();
   });
@@ -57,6 +60,9 @@ describe('ExperienceContent Component', () => {
       screen.getByRole('dialog', { name: /Información del equipo y facilitadoras/i })
     ).toBeInTheDocument();
     expect(screen.getByText('Quiénes Somos • Equipo Despertar')).toBeInTheDocument();
+    expect(screen.getByText('Vero & Nancy')).toBeInTheDocument();
+    expect(screen.getByText('Dani')).toBeInTheDocument();
+    expect(screen.queryByText('Carolina Basualdo')).not.toBeInTheDocument();
 
     // Cerrar modal
     const closeBtn = screen.getByRole('button', { name: /Cerrar modal/i });
