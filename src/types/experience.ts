@@ -1,4 +1,9 @@
-export type CapsuleTab = 'quienes-somos' | 'chascomus-finca-los-coipos' | 'tigre-delta-minahasa' | string;
+export type CapsuleTab =
+  | 'quienes-somos'
+  | 'chascomus-finca-los-coipos'
+  | 'mar-del-plata-acantilados'
+  | 'tigre-delta-minahasa'
+  | string;
 
 export interface CapsuleNavConfig {
   id: CapsuleTab;
@@ -6,7 +11,7 @@ export interface CapsuleNavConfig {
   shortLabel?: string;
   hash: string;
   subtitle: string;
-  iconType: 'users' | 'trees' | 'waves';
+  iconType: 'users' | 'trees' | 'waves' | 'sun';
 }
 
 export interface ActivityItem {

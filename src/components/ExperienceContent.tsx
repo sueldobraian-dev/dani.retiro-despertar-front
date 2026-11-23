@@ -11,6 +11,7 @@ import { useScrollSpy } from '@/hooks/useScrollSpy';
 import ExperienceNavTabs from '@/components/experience/ExperienceNavTabs';
 import QuienesSomosCapsule from '@/components/experience/QuienesSomosCapsule';
 import ChascomusCapsule from '@/components/experience/ChascomusCapsule';
+import MarDelPlataCapsule from '@/components/experience/MarDelPlataCapsule';
 import DeltaCapsule from '@/components/experience/DeltaCapsule';
 
 export const CAPSULES: CapsuleNavConfig[] = [
@@ -31,6 +32,14 @@ export const CAPSULES: CapsuleNavConfig[] = [
     iconType: 'trees',
   },
   {
+    id: 'mar-del-plata-acantilados',
+    label: 'Acantilados (Mar del Plata)',
+    shortLabel: 'Mar del Plata',
+    hash: 'retiro-despertar/mar-del-plata-acantilados',
+    subtitle: 'REnacer, de niña a mujer',
+    iconType: 'sun',
+  },
+  {
     id: 'tigre-delta-minahasa',
     label: 'Complejo Minahasa (Tigre - Delta)',
     shortLabel: 'Minahasa Delta',
@@ -43,6 +52,7 @@ export const CAPSULES: CapsuleNavConfig[] = [
 const CAPSULE_RENDERERS: Record<CapsuleTab, () => React.ReactNode> = {
   'quienes-somos': () => <QuienesSomosCapsule />,
   'chascomus-finca-los-coipos': () => <ChascomusCapsule />,
+  'mar-del-plata-acantilados': () => <MarDelPlataCapsule />,
   'tigre-delta-minahasa': () => <DeltaCapsule />,
 };
 
@@ -50,6 +60,13 @@ const HASH_MATCHERS: Array<{ match: (hash: string) => boolean; tab: CapsuleTab }
   {
     match: (hash) => hash.includes('chascomus') || hash.includes('finca-los-coipos'),
     tab: 'chascomus-finca-los-coipos',
+  },
+  {
+    match: (hash) =>
+      hash.includes('mar-del-plata') ||
+      hash.includes('acantilados') ||
+      hash.includes('renacer'),
+    tab: 'mar-del-plata-acantilados',
   },
   {
     match: (hash) => hash.includes('tigre') || hash.includes('minahasa') || hash.includes('delta'),

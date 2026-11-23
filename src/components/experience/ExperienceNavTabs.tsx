@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Users, Trees, Waves } from 'lucide-react';
+import { Users, Trees, Waves, Sun } from 'lucide-react';
 import { CapsuleNavConfig, CapsuleTab } from '@/types/experience';
 
 interface ExperienceNavTabsProps {
@@ -34,6 +34,7 @@ export default function ExperienceNavTabs({
                 {cap.iconType === 'users' && <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />}
                 {cap.iconType === 'trees' && <Trees className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />}
                 {cap.iconType === 'waves' && <Waves className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />}
+                {cap.iconType === 'sun' && <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />}
                 <span className="sm:hidden">{cap.shortLabel || cap.label}</span>
                 <span className="hidden sm:inline">{cap.label}</span>
               </button>

@@ -1,7 +1,7 @@
 import { ExperienceImage } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Users, Trees, Waves, ChevronRight, Sparkles } from 'lucide-react';
+import { Users, Trees, Waves, Sun, ChevronRight, Sparkles } from 'lucide-react';
 
 interface CarouselItem extends ExperienceImage {
   href: string;
@@ -13,7 +13,7 @@ interface ExperienceCapsulePreview {
   subtitle: string;
   description: string;
   href: string;
-  icon: 'users' | 'trees' | 'waves';
+  icon: 'users' | 'trees' | 'waves' | 'sun';
   badge?: string;
 }
 
@@ -35,6 +35,16 @@ const EXPERIENCE_CAPSULE_PREVIEWS: ExperienceCapsulePreview[] = [
       '11 hectáreas con laguna privada, Constelaciones con caballos, Yoga, Reiki, cronograma paso a paso y cómo llegar.',
     href: '/experiencia#retiro-despertar/chascomus-finca-los-coipos',
     icon: 'trees',
+  },
+  {
+    id: 'mar-del-plata-acantilados',
+    title: 'Acantilados (Mar del Plata)',
+    subtitle: 'REnacer, de niña a mujer',
+    description:
+      'Del 19 al 21 de Marzo junto a Caro y Dani. Encuentro frente al mar con cocina casera de orientación vegetariana.',
+    href: '/experiencia#retiro-despertar/mar-del-plata-acantilados',
+    icon: 'sun',
+    badge: 'Próxima Sede',
   },
   {
     id: 'tigre-delta-minahasa',
@@ -135,7 +145,7 @@ export default function ImageCarousel() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {EXPERIENCE_CAPSULE_PREVIEWS.map((capsule) => (
               <Link
                 key={capsule.id}
@@ -148,6 +158,7 @@ export default function ImageCarousel() {
                       {capsule.icon === 'users' && <Users className="w-5 h-5" />}
                       {capsule.icon === 'trees' && <Trees className="w-5 h-5" />}
                       {capsule.icon === 'waves' && <Waves className="w-5 h-5" />}
+                      {capsule.icon === 'sun' && <Sun className="w-5 h-5" />}
                     </div>
                     {capsule.badge && (
                       <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-100/80 text-amber-900 border border-amber-200/60">

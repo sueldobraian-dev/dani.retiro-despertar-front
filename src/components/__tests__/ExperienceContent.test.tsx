@@ -82,6 +82,29 @@ describe('ExperienceContent Component', () => {
     expect(screen.getByText(/Próximamente estaremos anunciando/i)).toBeInTheDocument();
   });
 
+  it('switches to Mar del Plata capsule and opens team modal showing only Caro and Dani', () => {
+    render(<ExperienceContent navigationMode="tabs" />);
+
+    const mdpTab = screen.getByRole('button', { name: /Acantilados \(Mar del Plata\)/i });
+    fireEvent.click(mdpTab);
+
+    expect(screen.getByRole('heading', { name: /REnacer, de niña a mujer/i })).toBeInTheDocument();
+    expect(screen.getByText(/Comida Casera con Orientación Vegetariana/i)).toBeInTheDocument();
+
+    const igLink = screen.getByRole('link', { name: /Ver @acanti\.surfranch/i });
+    expect(igLink).toHaveAttribute('href', 'https://www.instagram.com/acanti.surfranch/');
+
+    const teamBtn = screen.getByRole('button', { name: /Conocer Facilitadoras/i });
+    fireEvent.click(teamBtn);
+
+    expect(
+      screen.getByRole('dialog', { name: /Información del equipo en Mar del Plata/i })
+    ).toBeInTheDocument();
+    expect(screen.getByText('Carolina Basualdo')).toBeInTheDocument();
+    expect(screen.getByText('Dani')).toBeInTheDocument();
+    expect(screen.queryByText('Vero & Nancy')).not.toBeInTheDocument();
+  });
+
   it('renders all capsules simultaneously in continuous-scroll mode and scrolls smoothly on tab click', () => {
     render(<ExperienceContent navigationMode="continuous-scroll" />);
 
