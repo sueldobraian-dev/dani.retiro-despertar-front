@@ -118,9 +118,17 @@ describe('UpcomingRetreats Component', () => {
       expect(screen.getByText('Estamos preparando nuestro próximo encuentro')).toBeInTheDocument();
       expect(screen.getByText('Sumarme a la Lista Prioritaria')).toBeInTheDocument();
 
-      // El retiro no confirmado aparece en Calendario de Retiros con su status_text
+      // El retiro no confirmado aparece en Calendario de Retiros con su status_text y enlaces a Experiencia y Galería
       expect(screen.getByText('Retiro Despertar - Edición Primavera')).toBeInTheDocument();
       expect(screen.getByText('Octubre / Noviembre (A confirmar)')).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: /Ver Experiencia/i })).toHaveAttribute(
+        'href',
+        '/experiencia#retiro-despertar/chascomus-finca-los-coipos'
+      );
+      expect(screen.getByRole('link', { name: /Ver Galería/i })).toHaveAttribute(
+        'href',
+        '/galeria#retiro-despertar/chascomus-finca-los-coipos'
+      );
     });
   });
 });

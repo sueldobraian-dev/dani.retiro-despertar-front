@@ -415,7 +415,7 @@ export default function UpcomingRetreats() {
                                 <span className="font-semibold">{retreat.locations?.name || 'A confirmar'}</span>
                                 {retreat.locations?.address && <span className="text-stone-400"> ({retreat.locations.address})</span>}
                               </div>
-                              <div className="flex items-center gap-2 mt-0.5">
+                              <div className="flex flex-wrap items-center gap-2 mt-0.5">
                                 {retreat.locations?.maps_url && (
                                   <a
                                     href={retreat.locations.maps_url}
@@ -427,12 +427,20 @@ export default function UpcomingRetreats() {
                                   </a>
                                 )}
                                 {retreat.locations?.gallery_url && (
-                                  <Link
-                                    href={retreat.locations.gallery_url}
-                                    className="text-[10px] text-emerald-700 hover:text-emerald-900 underline font-semibold transition flex items-center gap-0.5"
-                                  >
-                                    <Camera className="w-3 h-3" /> Ver Galería
-                                  </Link>
+                                  <>
+                                    <Link
+                                      href={getExperienceUrl(retreat.locations.gallery_url)}
+                                      className="text-[10px] text-emerald-700 hover:text-emerald-900 underline font-semibold transition flex items-center gap-0.5"
+                                    >
+                                      <Sparkles className="w-3 h-3" /> Ver Experiencia
+                                    </Link>
+                                    <Link
+                                      href={getGalleryUrl(retreat.locations.gallery_url)}
+                                      className="text-[10px] text-emerald-700 hover:text-emerald-900 underline font-semibold transition flex items-center gap-0.5"
+                                    >
+                                      <Camera className="w-3 h-3" /> Ver Galería
+                                    </Link>
+                                  </>
                                 )}
                               </div>
                             </div>
