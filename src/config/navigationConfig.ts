@@ -41,6 +41,13 @@ export const NAV_ITEMS_CONFIG: NavItemConfig[] = [
   { id: 'beneficios', label: 'Beneficios', path: '/#beneficios', type: 'scroll', enabled: true },
   { id: 'galeria', label: 'Galería', path: '/galeria', type: 'page', enabled: true },
   { id: 'testimonios', label: 'Testimonios', path: '/testimonios', type: 'page', enabled: true },
+  {
+    id: 'indumentaria',
+    label: 'Indumentaria',
+    path: '/despierta-indumentaria-holistica',
+    type: 'page',
+    enabled: true,
+  },
 ];
 
 export const ACTIVE_NAV_ITEMS: NavItemConfig[] = NAV_ITEMS_CONFIG.filter((item) => item.enabled);

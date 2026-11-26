@@ -40,6 +40,7 @@ describe('Header Component', () => {
     expect(screen.getAllByRole('link', { name: /Inicio/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /La Experiencia/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Galería/i }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('link', { name: /Indumentaria/i }).length).toBeGreaterThan(0);
   });
 
   it('dispatches open-whatsapp event when Contactanos button is clicked', () => {

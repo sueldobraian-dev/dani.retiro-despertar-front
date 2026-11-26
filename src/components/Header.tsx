@@ -12,6 +12,7 @@ const PAGE_SECTION_MAP: Record<string, string> = {
   '/galeria': 'galeria',
   '/experiencia': 'experiencia',
   '/testimonios': 'testimonios',
+  '/despierta-indumentaria-holistica': 'indumentaria',
 };
 
 export default function Header() {
