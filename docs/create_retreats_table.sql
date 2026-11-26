@@ -23,9 +23,12 @@ CREATE TABLE retreats (
   location_id UUID REFERENCES locations(id) ON DELETE SET NULL,
   is_confirmed BOOLEAN DEFAULT TRUE,
   status_text TEXT,
-  max_capacity INTEGER DEFAULT 9,
+  max_capacity INTEGER DEFAULT NULL,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Migración (si la tabla retreats ya existe sin la columna max_capacity):
+-- ALTER TABLE retreats ADD COLUMN IF NOT EXISTS max_capacity INTEGER DEFAULT NULL;
 
 -- 4. Crear la tabla de registros / pre-inscripciones
 CREATE TABLE registrations (
