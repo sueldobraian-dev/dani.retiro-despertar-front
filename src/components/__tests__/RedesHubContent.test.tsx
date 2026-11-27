@@ -21,8 +21,18 @@ describe('RedesHubContent Component', () => {
   it('renders all 4 official links with their exact target URLs', () => {
     render(<RedesHubContent />);
 
+    const circuloManosImg = screen.getByRole('img', {
+      name: /Círculo de manos Retiro Despertar/i,
+    });
+    expect(circuloManosImg).toHaveAttribute('src', '/images/experience/circulo_infinito.jpg');
+
+    const logoDespiertaImg = screen.getByRole('img', {
+      name: /Logo Despierta Indumentaria Holística/i,
+    });
+    expect(logoDespiertaImg).toHaveAttribute('src', '/images/indumentaria/logo-despierta.jpg');
+
     const sitioLink = screen.getByRole('link', {
-      name: /Sitio Oficial — Retiro Despertar/i,
+      name: /Web Oficial Retiro Despertar/i,
     });
     expect(sitioLink).toHaveAttribute('href', 'https://retiro-despertar.vercel.app/#inicio');
 
@@ -35,7 +45,7 @@ describe('RedesHubContent Component', () => {
     );
 
     const igRetirosLink = screen.getByRole('link', {
-      name: /Instagram — Retiro Despertar/i,
+      name: /Despertar Retiro @despertar\.retiroholistico/i,
     });
     expect(igRetirosLink).toHaveAttribute(
       'href',
@@ -43,76 +53,28 @@ describe('RedesHubContent Component', () => {
     );
 
     const igRopaLink = screen.getByRole('link', {
-      name: /Instagram — Despierta Indumentaria/i,
+      name: /Despierta Indumentaria @despierta\.ropa/i,
     });
     expect(igRopaLink).toHaveAttribute('href', 'https://www.instagram.com/despierta.ropa');
   });
 
-  it('copies the official /redes link to clipboard and shows confirmation', async () => {
+  it('copies the official /redes link when clicking the share icon button and does not expose internal QR tools', async () => {
     render(<RedesHubContent />);
 
-    const copyBtn = screen.getByRole('button', {
-      name: /Copiar enlace de esta página/i,
+    expect(
+      screen.queryByRole('button', { name: /Panfletos \/ Banners/i })
+    ).not.toBeInTheDocument();
+
+    const shareBtn = screen.getByRole('button', {
+      name: /Compartir enlace/i,
     });
-    fireEvent.click(copyBtn);
+    fireEvent.click(shareBtn);
 
     await waitFor(() => {
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
         'https://retiro-despertar.vercel.app/redes'
       );
-      expect(screen.getByText(/¡Enlace copiado!/i)).toBeInTheDocument();
     });
-  });
-
-  it('opens and closes the print QR modal and triggers SVG download', () => {
-    const createObjectUrlMock = vi.fn().mockReturnValue('blob:mock-qr-svg');
-    const revokeObjectUrlMock = vi.fn();
-    vi.stubGlobal('URL', {
-      ...URL,
-      createObjectURL: createObjectUrlMock,
-      revokeObjectURL: revokeObjectUrlMock,
-    });
-
-    render(<RedesHubContent />);
-
-    const openQrBtn = screen.getByRole('button', {
-      name: /Ver QR para Panfletos \/ Banners/i,
-    });
-    fireEvent.click(openQrBtn);
-
-    expect(
-      screen.getByRole('dialog', { name: /Código QR Oficial/i })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('img', {
-        name: /Código QR hacia retiro-despertar.vercel.app\/redes/i,
-      })
-    ).toBeInTheDocument();
-
-    // Verifica que exista el botón de descarga del panfleto diseñado y los selectores UTM
-    const flyerDownloadLink = screen.getByRole('link', {
-      name: /Descargar Panfleto Diseñado Listo para Imprimir/i,
-    });
-    expect(flyerDownloadLink).toHaveAttribute('href', '/images/panfleto-despertar-qr.png');
-
-    const bannerPresetBtn = screen.getByRole('button', { name: /Banner \/ Lona/i });
-    fireEvent.click(bannerPresetBtn);
-    expect(screen.getByText(/utm_source=banner/i)).toBeInTheDocument();
-
-    const downloadSvgBtn = screen.getByRole('button', {
-      name: /Descargar Solo QR en SVG/i,
-    });
-    fireEvent.click(downloadSvgBtn);
-    expect(createObjectUrlMock).toHaveBeenCalled();
-
-    const closeBtn = screen.getByRole('button', {
-      name: /Cerrar ventana de código QR/i,
-    });
-    fireEvent.click(closeBtn);
-
-    expect(
-      screen.queryByRole('dialog', { name: /Código QR Oficial/i })
-    ).not.toBeInTheDocument();
   });
 
   it('propagates UTM parameters to internal links while keeping external links untouched', () => {
@@ -143,4 +105,3 @@ describe('RedesHubContent Component', () => {
     ).toBe('https://www.instagram.com/despierta.ropa');
   });
 });
-

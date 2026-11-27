@@ -49,7 +49,7 @@ export const QR_PRESETS: Record<QrPresetId, QrPresetConfig> = {
 export const SOCIAL_LINKS_ITEMS: SocialLinkItem[] = [
   {
     id: 'sitio-oficial',
-    title: 'Sitio Oficial — Retiro Despertar',
+    title: 'Retiro Despertar',
     subtitle: 'Constelaciones Familiares, Reiki, Yoga y Chef Privado',
     badge: 'Web Oficial',
     url: 'https://retiro-despertar.vercel.app/#inicio',
@@ -67,7 +67,7 @@ export const SOCIAL_LINKS_ITEMS: SocialLinkItem[] = [
   },
   {
     id: 'instagram-retiros',
-    title: 'Instagram — Retiro Despertar',
+    title: 'Despertar Retiro',
     subtitle: '@despertar.retiroholistico',
     badge: 'Instagram',
     url: 'https://www.instagram.com/despertar.retiroholistico',
@@ -76,7 +76,7 @@ export const SOCIAL_LINKS_ITEMS: SocialLinkItem[] = [
   },
   {
     id: 'instagram-indumentaria',
-    title: 'Instagram — Despierta Indumentaria',
+    title: 'Despierta Indumentaria',
     subtitle: '@despierta.ropa',
     badge: 'Instagram',
     url: 'https://www.instagram.com/despierta.ropa',
