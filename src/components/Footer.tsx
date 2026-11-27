@@ -57,6 +57,13 @@ export default function Footer() {
               >
                 Términos y Condiciones
               </Link>
+              <span className="text-stone-700">•</span>
+              <Link
+                href="/redes"
+                className="hover:text-emerald-400 transition-colors underline underline-offset-4 decoration-stone-700"
+              >
+                Nuestras Redes
+              </Link>
             </div>
 
             <div>
