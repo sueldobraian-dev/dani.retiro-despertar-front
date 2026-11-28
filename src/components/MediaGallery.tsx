@@ -5,6 +5,25 @@ import Image from 'next/image';
 import { MediaItem, Folder } from '@/data/galleryMock';
 import { Share2, Check } from 'lucide-react';
 
+export function normalizeJpgFilename(rawName?: string): string {
+  const baseName = (rawName || 'foto-retiro-despertar')
+    .trim()
+    .replace(/\.(jpe?g|png|webp|avif|heic|gif)$/i, '');
+  return `${baseName || 'foto-retiro-despertar'}.jpg`;
+}
+
+export function buildOptimizedJpgDownloadUrl(url: string): string {
+  if (!url.includes('res.cloudinary.com') || !url.includes('/upload/')) {
+    return url;
+  }
+
+  const withJpgFormat = url.includes('f_auto')
+    ? url.replace('/upload/', '/upload/fl_attachment/').replace(/f_auto/g, 'f_jpg')
+    : url.replace('/upload/', '/upload/fl_attachment,f_jpg,q_auto/');
+
+  return withJpgFormat.replace(/\.(webp|avif|heic|png|gif|jpeg)(\?.*)?$/i, '.jpg$2');
+}
+
 export default function MediaGallery() {
   const [activeFolder, setActiveFolder] = useState<string>('gastronomia');
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
@@ -77,17 +96,18 @@ export default function MediaGallery() {
   };
 
   const downloadImage = async (url: string, filename: string) => {
+    const jpgFilename = normalizeJpgFilename(filename);
     try {
       if (url.includes('res.cloudinary.com')) {
-        const downloadUrl = url.replace('/upload/', '/upload/fl_attachment/');
-        triggerDownload(downloadUrl, filename);
+        const downloadUrl = buildOptimizedJpgDownloadUrl(url);
+        triggerDownload(downloadUrl, jpgFilename);
         return;
       }
 
       const response = await fetch(url);
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
-      triggerDownload(blobUrl, filename);
+      triggerDownload(blobUrl, jpgFilename);
       window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error('Error downloading image:', error);
@@ -146,16 +166,16 @@ export default function MediaGallery() {
 
       // Reconstruir la ruta desde el hash (ej: #chascomus-finca-los-coipos/2026-chascomus-abril/photo:123)
       const rawPath = decodeURIComponent(hash.substring(1));
-      
+
       let photoId: string | null = null;
       let pathStr = rawPath;
-      
+
       const photoIndex = rawPath.indexOf('/photo:');
       if (photoIndex !== -1) {
         photoId = rawPath.substring(photoIndex + 7);
         pathStr = rawPath.substring(0, photoIndex);
       }
-      
+
       const parts = pathStr.split('/');
       if (parts.length === 0) return;
 
@@ -165,7 +185,7 @@ export default function MediaGallery() {
 
       if (matchedFolder) {
         setActiveFolder(matchedFolder.path);
-        
+
         // Si hay una segunda parte, se asume que es la subcarpeta
         if (parts.length > 1) {
           pendingSubfolderRef.current = parts[parts.length - 1];

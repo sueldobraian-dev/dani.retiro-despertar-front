@@ -1,7 +1,10 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import MediaGallery from '../MediaGallery';
+import MediaGallery, {
+  buildOptimizedJpgDownloadUrl,
+  normalizeJpgFilename,
+} from '../MediaGallery';
 
 const mockFolders = {
   ubicaciones: [
@@ -44,7 +47,7 @@ describe('MediaGallery Component', () => {
     }));
 
     // Spy seguro sobre history.replaceState
-    vi.spyOn(window.history, 'replaceState').mockImplementation(() => {});
+    vi.spyOn(window.history, 'replaceState').mockImplementation(() => { });
   });
 
   afterEach(() => {
@@ -150,5 +153,24 @@ describe('MediaGallery Component', () => {
     await waitFor(() => {
       expect(screen.queryByText('1 de 1')).not.toBeInTheDocument();
     });
+  });
+
+  it('transforms Cloudinary URLs and filenames to multi-platform optimized JPG format on download', () => {
+    const cloudinaryWebpUrl =
+      'https://res.cloudinary.com/demo/image/upload/f_auto,q_auto,w_1600,c_limit/v1700000000/retiro/foto-meditacion.webp';
+
+    expect(buildOptimizedJpgDownloadUrl(cloudinaryWebpUrl)).toBe(
+      'https://res.cloudinary.com/demo/image/upload/fl_attachment/f_jpg,q_auto,w_1600,c_limit/v1700000000/retiro/foto-meditacion.jpg'
+    );
+
+    const cloudinaryRawUrl =
+      'https://res.cloudinary.com/demo/image/upload/v1700000000/retiro/foto.heic';
+    expect(buildOptimizedJpgDownloadUrl(cloudinaryRawUrl)).toBe(
+      'https://res.cloudinary.com/demo/image/upload/fl_attachment,f_jpg,q_auto/v1700000000/retiro/foto.jpg'
+    );
+
+    expect(normalizeJpgFilename('foto-retiro.webp')).toBe('foto-retiro.jpg');
+    expect(normalizeJpgFilename('Plato Gastronómico')).toBe('Plato Gastronómico.jpg');
+    expect(normalizeJpgFilename('')).toBe('foto-retiro-despertar.jpg');
   });
 });
